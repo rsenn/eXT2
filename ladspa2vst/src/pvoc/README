@@ -1,0 +1,92 @@
+PVOC README
+===========
+
+Copyright (c) 1981-2004 Regents of the University of California
+Copyright (c) 2001-2 Richard Dobson
+Copyright (c) 2004 Tim Goetze <tim@quitte.de>
+	
+
+License information
+-------------------
+
+See the file "COPYING" for licensing terms & conditions for usage, 
+and a DISCLAIMER OF ALL WARRANTIES.
+
+
+What is this PVOC thing?
+------------------------
+
+The phase vocoder is a tool for sound analysis and resynthesis. This
+package provides an adaptation of the CARL implementation of the
+phase vocoder, along with three example LADSPA plugins conceived
+by Trevor Wishart and Richard Dobson, and a sound file time-stretching
+utility written by Tim Goetze.
+
+
+Documentation
+-------------
+
+Please point your browser to the file 'pvoc.html' in this directory.
+
+
+Web site and latest version
+---------------------------
+
+The latest information and package release reside at
+
+http://quitte.de/dsp/pvoc.html
+
+
+Requirements
+============
+
+To build the example plugins and the 'stretch' utility, you need to
+have the FFTW3 (Fourier Transform library) and libsndfile (sound file
+access library) packages installed. This package does not provide a
+configure script, so you'll have to check for correct package versions
+yourself:
+
+$ pkg-config --modversion fftw3f
+
+should output '3.0.1' or higher, and
+
+$ pkg-config --modversion sndfile
+
+should output '1.0.5' or higher.
+
+The Makefile employs pkg-config to obtain library and header locations
+for these packages, so checking for correct versions should suffice.
+
+To obtain these fine libraries, visit http://www.fftw.org/ for FFTW3 and
+http://www.mega-nerd.com/libsndfile/ for libsndfile respectively.
+
+
+Installation
+============
+
+At the shell prompt, enter (without the '$' denoting the prompt itself):
+
+$ make
+
+then, as the superuser, enter:
+
+# make install
+
+Please note that the default installation prefix is /usr/local ;
+if you prefer another place, you need to edit the Makefile or install
+manually.
+
+
+Bug reports
+-----------
+
+Bug reports should be sent to <tim@quitte.de>. Please include a detailed
+description of the misbehaviour and instructions on how to reproduce the
+bug.
+
+
+Troubleshooting
+---------------
+
+If you have trouble compiling this package, please send a bug report 
+containing the output of the 'make' command to <tim@quitte.de>.

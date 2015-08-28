@@ -1,0 +1,1 @@
+g++ -shared -fPIC -Wall -DLINUX -I/usr/include -I/usr/include/vst MyEQ.cpp /usr/lib/libfftw3f.a -o ../31BandEQ.so

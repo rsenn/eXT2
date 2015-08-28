@@ -1,0 +1,1 @@
+g++ -shared -fPIC -Wall -DLINUX -I/usr/include -I/usr/include/vst BufferOverrideMain.cpp -o ../BufferOverride.so

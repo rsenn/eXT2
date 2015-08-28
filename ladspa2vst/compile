@@ -1,0 +1,121 @@
+#!/bin/bash
+
+CXX="g++"
+CXXOPTIONS="-w -shared -fPIC -fexceptions -funroll-loops -fomit-frame-pointer -O2 "
+CXXDEFINES="-DPIC -DLINUX "
+CXXINCLUDES="-Ivst -I/usr/include -I/usr/include/vst "
+CXXLIBRARY="-L/usr/lib "
+CXXSOURCES="src/ladspa2vst_bridge.cpp "
+
+MAKE="$CXX $CXXOPTIONS $CXXDEFINES $CXXINCLUDES $CXXLIBRARY $CXXSOURCES"
+
+rm -f plugins/*.so
+
+# AMB_PLUGINS ==========================================================
+for plugin in MONOPANNER STEREOPANNER ROTATOR
+do
+    name=`echo $plugin | tr "[:upper:]" "[:lower:]"`
+    $MAKE -DAMB_PLUGINS -D$plugin -o plugins/ambisonic_$name.so
+done
+
+# MCP_PLUGINS ==========================================================
+for plugin in CHORUS1 CHORUS2 PHASER1 PHASER2 LPF24 HPF24
+do
+    name=`echo $plugin | tr "[:upper:]" "[:lower:]"`
+    $MAKE -DMCP_PLUGINS -D$plugin -o plugins/mcp_$name.so
+done
+
+# TAP_PLUGINS ==========================================================
+for plugin in AUTOPAN CHORUSFLANGER DEESSER DOUBLER DYNAMICS_M DYNAMICS_ST \
+              ECHO EQ EQBW LIMITER PINKNOISE PITCH REFLECTOR REVERB ROTSPEAK \
+              SIGMOID TREMOLO TUBEWARMTH VIBRATO
+do
+    name=`echo $plugin | tr "[:upper:]" "[:lower:]"`
+    $MAKE -DTAP_PLUGINS -D$plugin -o plugins/tap_$name.so
+done
+
+# VCF_PLUGINS ==========================================================
+# BROKEN !
+# for plugin in RESLP LP HP BP1 BP2 NOTCH PEAKEQ LSHELF HSHELF
+# do
+#     name=`echo $plugin | tr "[:upper:]" "[:lower:]"`
+#     $MAKE -DVCF_PLUGINS -D${plugin} -o plugins/VCF_${plugin}.so
+# done
+
+# VCO_PLUGINS ==========================================================
+for plugin in PULSE SAW REV
+do
+    name=`echo $plugin | tr "[:upper:]" "[:lower:]"`
+    $MAKE -DVCO_PLUGINS -D$plugin -o plugins/vco_$name.so
+done
+
+# FIL_PLUGIN ===========================================================
+$MAKE -DFIL_PLUGIN -o plugins/parametric.so
+
+# REV_PLUGIN ===========================================================
+$MAKE -DREV_PLUGIN -o plugins/G2reverb.so
+
+# VOCODER_PLUGIN =======================================================
+$MAKE -DVOCODER_PLUGIN -o plugins/ladspa_vocoder.so
+
+# PVOC_PLUGINS =========================================================
+for plugin in EXAGGERATE TRANSPOSE ACCUMULATE
+do
+    name=`echo $plugin | tr "[:upper:]" "[:lower:]"`
+    $MAKE -DPVOC_PLUGINS -D$plugin -lfftw3f -lm -o plugins/pvoc_$name.so
+done
+
+# CAPS_PLUGINS =========================================================
+#
+# BROKEN PLUGINS:
+#    ROESSLER LORENZ VCOS VOCD SIN
+
+for plugin in EQ COMPRESS PAN PREAMPIII PREAMPIV AMPIII AMPIV AMPV \
+              CABINETI CABINETII CLIP CHORUSI STEREOCHORUSI CHORUSII \
+              STEREOCHORUSII PHASERI PHASERII SWEEPVFI SWEEPVFII SCAPE \
+              CEO WHITE JVREV PLATE PLATE2x2 CLICK DIRAC HRTF
+do
+    name=`echo $plugin | tr "[:upper:]" "[:lower:]"`
+    $MAKE -DCAPS_PLUGINS -D$plugin -o plugins/caps_$name.so
+done
+
+# SWH_PLUGINS ==========================================================
+#
+# BROKEN PLUGINS:
+#    ALLPASS ANALOGUEOSC  BANDPASS_A_IIR BANDPASS_IIR CHEBSTORTION \
+#    COMB1887 DECIMATOR GSM IMP DIVIDER DELAY1898 LOWPASSIIR \
+#    LSFILTER GATE TRIPLEPARA SURROUNDENCODER HIGHPASSIIR VALVERECT \
+#    HARMONICGEN HERMESFILTER PITCHSCALELOW PITCHSCALEHIGH SMOOTHDECIMATE \
+#    SHAPER DECAY MBEQ MODDELAY FREQTRACKER TAPEDELAY FMOSC SINGLEPARA \
+#    BUTTERWORTH GONGBEATER DIODE DYSONCOMPRESS NOTCHIIR \
+
+for plugin in ALIAS AMPITCHSHIFT AMP \
+              BODESHIFTER BODESHIFTER_CV \
+              COMB1190 COMBSPLITTER SWHCONST \
+              CROSSOVERDIST DCREMOVE DECLIP \
+              DELAYORAMA DJEQ DJFLANGER \
+              FADDELAY FASTLOOKAHEADLIMITER FLANGER FOLDOVER \
+              FOVERDRIVE GIANTFLANGE GONG \
+              GVERB HARDLIMITER \
+              HILBERT IMPULSE INV KARAOKE LATENCY LCRDELAY \
+              LOOKAHEADLIMITER LOOKAHEADLIMITERCONST \
+              MATRIXMSST MATRIXSPATIALISER MATRIXSTMS \
+              MULTIVOICECHORUS PHASERS \
+              PLATE POINTERCAST RATESHIFTER RETROFLANGE REVDELAY RINGMOD \
+              SATANMAXIMISER SC11425 SC21426 SC31427 SC41434 SC41882 \
+              SC4M1916 SE41883 SIFTER SINCOS SINUSWAVEWRAPPER \
+              SMOOTHDECIMATE SPLIT STEPMUXER  \
+              SVF TRANSIENT VALVE VYNIL \
+              WAVETERRAIN XFADE ZM1
+do
+    name=`echo $plugin | tr "[:upper:]" "[:lower:]"`
+    optional=""
+    if [ plugin = "IMP" ] ; then
+        optional="-lfftw3f -lm "
+    fi
+    if [ plugin = "MBEQ" ] ; then
+        optional="-lfftw3f -lm "
+    fi
+    $MAKE -DSWH_PLUGINS -D$plugin $optional -Isrc/swh src/swh/ladspa-util.c -o plugins/swh_$name.so
+done
+

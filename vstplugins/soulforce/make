@@ -1,0 +1,4 @@
+
+# release build =======================
+g++ -shared -fPIC -DPIC -DMOTIF=1 -DLINUX=1 -s -lX11 -lXpm -I/usr/include -I/usr/include/vst Main.cpp -o SoulForceVST.so
+
