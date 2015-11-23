@@ -1,0 +1,1 @@
+g++ -shared -fPIC -O2 -DLINUX -I/usr/include -I/usr/include/vst BufferSynth2Main.cpp -o ../BufferSynth2.so

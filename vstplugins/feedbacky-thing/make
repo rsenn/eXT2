@@ -1,0 +1,1 @@
+g++ -shared -fPIC -Wall -DLINUX -I/usr/include -I/usr/include/vst VstPlugin.cpp -o ../feedback-Y-thing.so

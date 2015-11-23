@@ -1,0 +1,1 @@
+g++ -shared -fPIC -DMOTIF=1 -DLINUX=1 -lX11 -lXpm -I/usr/include -I/usr/include/vst vstplugmain.cpp -o ../VOPM.so

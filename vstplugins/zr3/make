@@ -1,0 +1,1 @@
+g++ -shared -fPIC -DPIC -DMOTIF=1 -DLINUX=1 -DDEBUG -lX11 -lXpm -I/usr/include -I/usr/include/vst flpmain.cpp -o ../ZR3VST.so

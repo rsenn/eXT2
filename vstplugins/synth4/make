@@ -1,0 +1,1 @@
+g++ -O2 -shared -fPIC -I/usr/include -I/usr/include/vst -lX11 plugin.cpp -o ../synth4.so

@@ -1,0 +1,1 @@
+g++ -shared -fPIC -DPIC -DMOTIF=1 -DLINUX=1 -lX11 -lXpm -I/usr/include -I/usr/include/vst main.cpp -o CycleShifter_Plugin.so

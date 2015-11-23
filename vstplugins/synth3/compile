@@ -1,0 +1,1 @@
+g++ -O2 -shared -fPIC -I/usr/include -I/usr/include/vst plugin.cpp -o ../synth3.so

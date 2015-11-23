@@ -1,0 +1,68 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cc}
+decl {//Copyright (c) 2003-2005 Nasca Octavian Paul} {} 
+
+decl {//License: GNU GPL version 2} {} 
+
+decl {\#include <FL/Fl_Dial.H>} {public
+} 
+
+decl {\#include <FL/fl_draw.H>} {public
+} 
+
+decl {\#include <stdio.h>} {public
+} 
+
+decl {\#include <math.h>} {public
+} 
+
+class WidgetPDial {open selected : {public Fl_Dial}
+} {
+  Function {WidgetPDial(int x,int y, int w, int h, const char *label=0):Fl_Dial(x,y,w,h,label)} {} {
+    code {oldvalue=0.0;} {}
+  }
+  Function {handle(int event)} {return_type int
+  } {
+    code {double dragsize,v,min=minimum(),max=maximum();
+int my;
+
+switch (event){
+case FL_PUSH:oldvalue=value();
+case FL_DRAG:
+     my=-(Fl::event_y()-y()-h()/2);
+
+     dragsize=200.0;
+     if (Fl::event_state(FL_BUTTON1)==0) dragsize*=10;
+     v=oldvalue+my/dragsize*(max-min);
+     if (v<min) v=min;
+        else if (v>max) v=max;
+
+     //printf("%d   %g    %g\\n",my,v,oldvalue);     
+     value(v);
+     value_damage();
+     if (this->when()!=0) do_callback();
+     return(1); 
+     break;
+case FL_RELEASE:
+     if (this->when()==0) do_callback();
+	return(1);
+     break;
+};
+return(0);} {}
+  }
+  Function {drawgradient(int cx,int cy,int sx,double m1,double m2)} {return_type void
+  } {
+    code {for (int i=(int)(m1*sx);i<(int)(m2*sx);i++){
+   double tmp=1.0-pow(i*1.0/sx,2.0);
+   pdialcolor(140+(int) (tmp*90),140+(int)(tmp*90),140+(int) (tmp*100));
+   fl_arc(cx+sx/2-i/2,cy+sx/2-i/2,i,i,0,360);
+};} {}
+  }
+  Function {pdialcolor(int r,int g,int b)} {} {
+    code {if (active_r()) fl_color(r,g,b);
+   else fl_color(160-(160-r)/3,160-(160-b)/3,160-(160-b)/3);} {}
+  }
+  decl {double oldvalue;} {}
+} 
