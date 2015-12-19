@@ -14,6 +14,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.
 
 */
+<<<<<<< HEAD
 
 #ifndef __CONTROL__
 #define __CONTROL__
@@ -35,3 +36,26 @@ void CLabel :: paint(CGraphic *dc, CRect rc, int state)
 }
 
 #endif
+=======
+
+#ifndef __CONTROL__
+#define __CONTROL__
+
+#include "win.h"
+
+class CLabel : public CCtrl
+{
+	public:
+		CStr text;
+		CLabel() : CCtrl() {}
+		void paint(CGraphic *dc, CRect rc, int state);
+};
+
+void CLabel :: paint(CGraphic *dc, CRect rc, int state)
+{	
+	dc->setTextCol(asColor(255, 255, 255));
+	dc->drawText(text, rc, alLeft);		
+}
+
+#endif
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a

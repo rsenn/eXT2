@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //	BufferSynth2.cpp
 //	--------------------------------------------------------------------------
 //	Copyright (c) 2005 Niall Moody
@@ -19,12 +20,39 @@
 //	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 //	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //	DEALINGS IN THE SOFTWARE.
+=======
+//	BufferSynth2.cpp
+//	--------------------------------------------------------------------------
+//	Copyright (c) 2005 Niall Moody
+//	
+//	Permission is hereby granted, free of charge, to any person obtaining a
+//	copy of this software and associated documentation files (the "Software"),
+//	to deal in the Software without restriction, including without limitation
+//	the rights to use, copy, modify, merge, publish, distribute, sublicense,
+//	and/or sell copies of the Software, and to permit persons to whom the
+//	Software is furnished to do so, subject to the following conditions:
+//
+//	The above copyright notice and this permission notice shall be included in
+//	all copies or substantial portions of the Software.
+//
+//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+//	THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+//	DEALINGS IN THE SOFTWARE.
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 //	--------------------------------------------------------------------------
 
 #include <stdio.h>       //for the printf commands used for the parameter displays
 #include <math.h>
 
+<<<<<<< HEAD
 #include "BufferSynth2.h"
+=======
+#include "BufferSynth2.h"
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 #include "EndianSwapFunctions.h"
 
 extern bool oome;
@@ -40,9 +68,15 @@ BufferSynth2::BufferSynth2(audioMasterCallback audioMaster)
 
 	editor = 0;
 	pd = 0;
+<<<<<<< HEAD
 	NoteMaster = 0;
 	EdArraySize = 0;
 
+=======
+	NoteMaster = 0;
+	EdArraySize = 0;
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	//sprintf(patchPath, "");
 
 	InitEndian();
@@ -93,12 +127,21 @@ BufferSynth2::BufferSynth2(audioMasterCallback audioMaster)
 	checkTempo = 1024;
 	checkBSZero = false;
 
+<<<<<<< HEAD
 	CurrentParam = 0;
 
 	FiltFilter = new ParameterFilter(samplerate, 0.0022675736961451247165532879818594);	//0.0022675736961451247165532879818594 = 100/44100
 
 	ThreshEnv1 = 0.0f;
 	ThreshEnv2 = 0.0f;
+=======
+	CurrentParam = 0;
+
+	FiltFilter = new ParameterFilter(samplerate, 0.0022675736961451247165532879818594);	//0.0022675736961451247165532879818594 = 100/44100
+
+	ThreshEnv1 = 0.0f;
+	ThreshEnv2 = 0.0f;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	threshMeterCount = 0;
  }
 
@@ -107,9 +150,15 @@ BufferSynth2::BufferSynth2(audioMasterCallback audioMaster)
 //----------------------------------------------------------------------------
 BufferSynth2::~BufferSynth2()
 {
+<<<<<<< HEAD
 	int i;
 
 	if(FiltFilter)
+=======
+	int i;
+
+	if(FiltFilter)
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		delete FiltFilter;
 
 	if(NoteMaster)
@@ -134,6 +183,7 @@ BufferSynth2::~BufferSynth2()
 //----------------------------------------------------------------------------
 twofloats BufferSynth2::DoProcess(twofloats a, bool barStart)
 {
+<<<<<<< HEAD
 	twofloats retval;
 	float tempfilt;
 
@@ -177,11 +227,60 @@ twofloats BufferSynth2::DoProcess(twofloats a, bool barStart)
 	if(ThreshEnv2 < 0.0f)
 		ThreshEnv2 = 0.0f;
 
+=======
+	twofloats retval;
+	float tempfilt;
+
+	if(ffilt_OnOff > 0.5f)
+	{
+		tempfilt = (float)FiltFilter->GetSample(ffilt_Cutoff);
+		NoteMaster->SetParameter(kfilt_Cutoff, tempfilt);
+	}
+
+	//--Calculate threshold envelope--------
+	if(fb1_Input < (1.0f/3.0f))
+	{
+		if((fabs(a.left)*fb1_IPGain*2.0f) > ThreshEnv1)
+			ThreshEnv1 = ((float)fabs(a.left)*fb2_IPGain*2.0f);
+		else/* if((fabs(in1[0]*fb1_IPGain*2.0f) > 0.0f))*/
+			ThreshEnv1 -= 0.0001f;
+	}
+	else if(fb1_Input < (2.0f/3.0f))
+	{
+		if((fabs(a.right)*fb1_IPGain*2.0f) > ThreshEnv1)
+			ThreshEnv1 = ((float)fabs(a.right)*fb2_IPGain*2.0f);
+		else/* if((fabs(in2[0]*fb1_IPGain*2.0f) > 0.0f))*/
+			ThreshEnv1 -= 0.0001f;
+	}
+	if(fb2_Input < (1.0f/3.0f))
+	{
+		if((fabs(a.left)*fb2_IPGain*2.0f) > ThreshEnv2)
+			ThreshEnv2 = ((float)fabs(a.left)*fb2_IPGain*2.0f);
+		else/* if((fabs(in1[0]*fb2_IPGain*2.0f) > 0.0f))*/
+			ThreshEnv2 -= 0.0001f;
+	}
+	else if(fb2_Input < (2.0f/3.0f))
+	{
+		if((fabs(a.right)*fb2_IPGain*2.0f) > ThreshEnv2)
+			ThreshEnv2 = ((float)fabs(a.right)*fb2_IPGain*2.0f);
+		else/* if((fabs(in2[0]*fb2_IPGain*2.0f) > 0.0f))*/
+			ThreshEnv2 -= 0.0001f;
+	}
+	if(ThreshEnv1 < 0.0f)
+		ThreshEnv1 = 0.0f;
+	if(ThreshEnv2 < 0.0f)
+		ThreshEnv2 = 0.0f;
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	//--Write the i/p to the buffers--------
 	if(fb1_Freeze < 0.5f)
 	{
 		if(fb1_Input < (1.0f/3.0f))
+<<<<<<< HEAD
 		{
+=======
+		{
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			a.left *= fb1_IPGain * 2.0f;
 			if(ThreshEnv1 >= fb1_RecThreshold)
 			{
@@ -189,7 +288,11 @@ twofloats BufferSynth2::DoProcess(twofloats a, bool barStart)
 			}
 		}
 		else if(fb1_Input < (2.0f/3.0f))
+<<<<<<< HEAD
 		{
+=======
+		{
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			a.right *= fb1_IPGain * 2.0f;
 			if(ThreshEnv2 >= fb1_RecThreshold)
 			{
@@ -201,19 +304,31 @@ twofloats BufferSynth2::DoProcess(twofloats a, bool barStart)
 	if(fb2_Freeze < 0.5f)
 	{
 		if(fb2_Input < (1.0f/3.0f))
+<<<<<<< HEAD
 		{
+=======
+		{
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			a.left *= fb2_IPGain * 2.0f;
 			if(ThreshEnv1 >= fb2_RecThreshold)
 				NoteMaster->Write2IPBuffer2(a.left);
 		}
 		else if(fb2_Input < (2.0f/3.0f))
+<<<<<<< HEAD
 		{
+=======
+		{
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			a.right *= fb2_IPGain * 2.0f;
 			if(ThreshEnv2 >= fb2_RecThreshold)
 				NoteMaster->Write2IPBuffer2(a.right);
 		}
 	}
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	//--Get the current samples (left & right)--------
 	retval = NoteMaster->GetSample(barStart);
 
@@ -227,6 +342,7 @@ twofloats BufferSynth2::DoProcess(twofloats a, bool barStart)
 //Shouldn't need to change this...
 //----------------------------------------------------------------------------
 void BufferSynth2::process(float **inputs, float **outputs, long sampleFrames)
+<<<<<<< HEAD
 {
 	unsigned long i;
 	double bs, ppq;
@@ -235,6 +351,16 @@ void BufferSynth2::process(float **inputs, float **outputs, long sampleFrames)
 	double quartersPerBar;
 	double remainingTime;
 	unsigned long remainingSamples = 0;
+=======
+{
+	unsigned long i;
+	double bs, ppq;
+	long numerator, denominator;
+	double currentPPQ;
+	double quartersPerBar;
+	double remainingTime;
+	unsigned long remainingSamples = 0;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	bool barStart = false;
     float *in1  =  inputs[0];
     float *in2  =  inputs[1];
@@ -243,6 +369,7 @@ void BufferSynth2::process(float **inputs, float **outputs, long sampleFrames)
 	twofloats a;
 
 	tempo = (float)((float)tempoAt(0)*0.0001f);
+<<<<<<< HEAD
 	NoteMaster->SetTempo(tempo);
 
 	VstTimeInfo	*TimeInfo = getTimeInfo(kVstPpqPosValid|kVstBarsValid|kVstTimeSigValid);
@@ -287,6 +414,52 @@ void BufferSynth2::process(float **inputs, float **outputs, long sampleFrames)
 			else
 				a = DoProcess(a, false);
 		}
+=======
+	NoteMaster->SetTempo(tempo);
+
+	VstTimeInfo	*TimeInfo = getTimeInfo(kVstPpqPosValid|kVstBarsValid|kVstTimeSigValid);
+	if(TimeInfo)
+	{
+		bs = TimeInfo->barStartPos;
+		ppq = TimeInfo->ppqPos;
+		numerator = TimeInfo->timeSigNumerator;
+		denominator = TimeInfo->timeSigDenominator;
+
+		if((TimeInfo->flags&kVstPpqPosValid) != kVstPpqPosValid)
+			barStart = false;
+		else if((TimeInfo->flags&kVstBarsValid) != kVstBarsValid)
+			barStart = false;
+		else if((TimeInfo->flags&kVstTimeSigValid) != kVstTimeSigValid)
+			barStart = false;
+		else
+		{
+			currentPPQ = ppq-bs;
+			if(currentPPQ > 0.0)
+			{
+				quartersPerBar = ((1.0/denominator)*4.0)*numerator;
+				remainingTime = (60.0/static_cast<double>(tempo))*(quartersPerBar-currentPPQ);
+				remainingSamples = static_cast<unsigned long>(remainingTime * samplerate);
+				if(remainingSamples < static_cast<unsigned long>(sampleFrames))
+					barStart = true;
+			}
+			else
+				barStart = true;
+		}
+	}
+
+	for(i=0;i<static_cast<unsigned long>(sampleFrames);i++)
+	{
+		a.left = in1[i];
+		a.right = in2[i];
+
+		if(barStart)
+		{
+			if(remainingSamples == i)
+				a = DoProcess(a, true);
+			else
+				a = DoProcess(a, false);
+		}
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		else
 			a = DoProcess(a, false);
         
@@ -299,6 +472,7 @@ void BufferSynth2::process(float **inputs, float **outputs, long sampleFrames)
 //Shouldn't need to change this...
 //----------------------------------------------------------------------------
 void BufferSynth2::processReplacing(float **inputs, float **outputs, long sampleFrames)
+<<<<<<< HEAD
 {
 	unsigned long i;
 	double bs, ppq;
@@ -367,6 +541,76 @@ void BufferSynth2::processReplacing(float **inputs, float **outputs, long sample
         
 		out1[i] = a.left;
 		out2[i] = a.right;
+=======
+{
+	unsigned long i;
+	double bs, ppq;
+	long numerator, denominator;
+	double currentPPQ;
+	double quartersPerBar;
+	double remainingTime;
+	unsigned long remainingSamples = 0;
+	bool barStart = false;
+    float *in1  =  inputs[0];
+    float *in2  =  inputs[1];
+    float *out1 = outputs[0];
+    float *out2 = outputs[1];
+	twofloats a;
+
+	tempo = (float)((float)tempoAt(0)*0.0001f);
+	NoteMaster->SetTempo(tempo);
+
+	/*if(getBarStart())
+		barStart = true;*/
+
+	VstTimeInfo	*TimeInfo = getTimeInfo(kVstPpqPosValid|kVstBarsValid|kVstTimeSigValid);
+	if(TimeInfo)
+	{
+		bs = TimeInfo->barStartPos;
+		ppq = TimeInfo->ppqPos;
+		numerator = TimeInfo->timeSigNumerator;
+		denominator = TimeInfo->timeSigDenominator;
+
+		if((TimeInfo->flags&kVstPpqPosValid) != kVstPpqPosValid)
+			barStart = false;
+		else if((TimeInfo->flags&kVstBarsValid) != kVstBarsValid)
+			barStart = false;
+		else if((TimeInfo->flags&kVstTimeSigValid) != kVstTimeSigValid)
+			barStart = false;
+		else
+		{
+			currentPPQ = ppq-bs;
+			if(currentPPQ > 0.0)
+			{
+				quartersPerBar = ((1.0/denominator)*4.0)*numerator;
+				remainingTime = (60.0/static_cast<double>(tempo))*(quartersPerBar-currentPPQ);
+				remainingSamples = static_cast<unsigned long>(remainingTime * samplerate);
+				if(remainingSamples < static_cast<unsigned long>(sampleFrames))
+					barStart = true;
+			}
+			else
+				barStart = true;
+		}
+	}
+
+	for(i=0;i<static_cast<unsigned long>(sampleFrames);i++)
+	{
+		a.left = in1[i];
+		a.right = in2[i];
+
+		if(barStart)
+		{
+			if(remainingSamples == i)
+				a = DoProcess(a, true);
+			else
+				a = DoProcess(a, false);
+		}
+		else
+			a = DoProcess(a, false);
+        
+		out1[i] = a.left;
+		out2[i] = a.right;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	}
 }
 
@@ -378,9 +622,15 @@ void BufferSynth2::setWDArray(int size)
 
 //----------------------------------------------------------------------------
 void BufferSynth2::getWDArray(float *buf, int num)
+<<<<<<< HEAD
 {
 	if(EdArraySize == 0)
 		return;
+=======
+{
+	if(EdArraySize == 0)
+		return;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
 	if(num == 0)
 		NoteMaster->GetBuffer1(buf, EdArraySize);
@@ -394,10 +644,17 @@ void BufferSynth2::Write2Buffer1(char *path)
     float *temp = 0;
     
     temp = Loader.LoadWaveFile(path, samplerate, fb1_StretchFile, 44100);
+<<<<<<< HEAD
     if(temp)
 	{
         NoteMaster->Write2IPBuffer1(temp);
 		delete temp;
+=======
+    if(temp)
+	{
+        NoteMaster->Write2IPBuffer1(temp);
+		delete temp;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	}
 }
 
@@ -407,10 +664,17 @@ void BufferSynth2::Write2Buffer2(char *path)
     float *temp;
     
     temp = Loader.LoadWaveFile(path, samplerate, fb2_StretchFile, 44100);
+<<<<<<< HEAD
     if(temp)
 	{
         NoteMaster->Write2IPBuffer2(temp);
 		delete temp;
+=======
+    if(temp)
+	{
+        NoteMaster->Write2IPBuffer2(temp);
+		delete temp;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	}
 }
 
@@ -419,11 +683,19 @@ void BufferSynth2::LoadPatch(char *path)
 {
 	unsigned long i;
 	FILE *fp;
+<<<<<<< HEAD
 	BS2Preset *temppreset;
 
 #ifndef MAC
 	fp = fopen(path, "rb");
 #else
+=======
+	BS2Preset *temppreset;
+
+#ifndef MAC
+	fp = fopen(path, "rb");
+#else
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
         char *tempfilename;
         tempfilename = path+12;
         i = 0;
@@ -481,8 +753,13 @@ void BufferSynth2::LoadPatch(char *path)
 
 	fclose(fp);
 
+<<<<<<< HEAD
 	setProgram(curProgram);
 	updateDisplay();
+=======
+	setProgram(curProgram);
+	updateDisplay();
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 }
 
 //----------------------------------------------------------------------------
@@ -498,7 +775,11 @@ void BufferSynth2::SavePatch(char *path)
 
 #ifndef MAC
 	fp = fopen(path, "wb");
+<<<<<<< HEAD
 #else //hmm... what does this do again?
+=======
+#else //hmm... what does this do again?
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
         char *tempfilename;
         tempfilename = path+12;
         i = 0;
@@ -532,6 +813,7 @@ void BufferSynth2::SavePatch(char *path)
                 tempfilename[i] = 0;
             }
         }
+<<<<<<< HEAD
 #endif
 	if(!fp)
 		return;
@@ -539,6 +821,15 @@ void BufferSynth2::SavePatch(char *path)
 	if(fsett_SaveBufferContents > 0.5f)
 		strcpy(pd->presets[curProgram].patchPath, path);
 	else
+=======
+#endif
+	if(!fp)
+		return;
+
+	if(fsett_SaveBufferContents > 0.5f)
+		strcpy(pd->presets[curProgram].patchPath, path);
+	else
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		strcpy(pd->presets[curProgram].patchPath, "");
 
 	pd->presets[curProgram].EndianSwap();
@@ -575,11 +866,19 @@ void BufferSynth2::LoadBank(char *path)
 {
 	unsigned long i, j;
 	FILE *fp;
+<<<<<<< HEAD
 	BS2Preset *temppreset;
 
 #ifndef MAC
 	fp = fopen(path, "rb");
 #else
+=======
+	BS2Preset *temppreset;
+
+#ifndef MAC
+	fp = fopen(path, "rb");
+#else
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
         char *tempfilename;
         tempfilename = path+12;
         i = 0;
@@ -645,8 +944,13 @@ void BufferSynth2::LoadBank(char *path)
 
 	fclose(fp);
 
+<<<<<<< HEAD
 	setProgram(curProgram);
 	updateDisplay();
+=======
+	setProgram(curProgram);
+	updateDisplay();
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 }
 
 //----------------------------------------------------------------------------
@@ -662,7 +966,11 @@ void BufferSynth2::SaveBank(char *path)
 
 #ifndef MAC
 	fp = fopen(path, "wb");
+<<<<<<< HEAD
 #else
+=======
+#else
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
         char *tempfilename;
         tempfilename = path+12;
         i = 0;
@@ -732,7 +1040,11 @@ void BufferSynth2::IncPatch()
 	if((curProgram+1)<kNumPrograms)
 		setProgram(curProgram+1);
 	else
+<<<<<<< HEAD
 		setProgram(0);
+=======
+		setProgram(0);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	updateDisplay();
 }
 
@@ -742,11 +1054,19 @@ void BufferSynth2::DecPatch()
 	if((curProgram-1)>-1)
 		setProgram(curProgram-1);
 	else
+<<<<<<< HEAD
 		setProgram(kNumPrograms-1);
 	updateDisplay();
 }
 
 //#if defined(_WINDOWS) && defined(_DEBUG)
+=======
+		setProgram(kNumPrograms-1);
+	updateDisplay();
+}
+
+//#if defined(_WINDOWS) && defined(_DEBUG)
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 #ifdef TOMASZ_DEBUG
 //----------------------------------------------------------------------------
 void BufferSynth2::Save2Cpp()
@@ -778,7 +1098,11 @@ void BufferSynth2::Save2Cpp()
 	fprintf(fp, "	setParameter(kb1_InvertSize, %ff);\n", fb1_InvertSize);
 	fprintf(fp, "	setParameter(kb1_ReadPosition, %ff);\n", fb1_ReadPosition);
 	fprintf(fp, "	setParameter(kb1_ResetRPOnMIDINote, %ff);\n", fb1_ResetRPOnMIDINote);
+<<<<<<< HEAD
 	fprintf(fp, "	setParameter(kb1_Pan, %ff);\n", fb1_Pan);
+=======
+	fprintf(fp, "	setParameter(kb1_Pan, %ff);\n", fb1_Pan);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	fprintf(fp, "	setParameter(kb1_IPGain, %ff);\n", fb1_IPGain);
 
 	fprintf(fp, "	setParameter(kb2_Start, %ff);\n", fb2_Start);
@@ -787,7 +1111,11 @@ void BufferSynth2::Save2Cpp()
 	fprintf(fp, "	setParameter(kb2_SizeFrom, %ff);\n", fb2_SizeFrom);
 	fprintf(fp, "	setParameter(kb2_RetainSize, %ff);\n", fb2_RetainSize);
 	fprintf(fp, "	setParameter(kb2_Size2Tempo, %ff);\n", fb2_Size2Tempo);
+<<<<<<< HEAD
 	fprintf(fp, "	setParameter(kb2_RecThreshold, %ff);\n", fb2_RecThreshold);
+=======
+	fprintf(fp, "	setParameter(kb2_RecThreshold, %ff);\n", fb2_RecThreshold);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	fprintf(fp, "	setParameter(kb2_Speed_Pitch, %ff);\n", fb2_Speed_Pitch);
 	fprintf(fp, "	setParameter(kb2_Level, %ff);\n", fb2_Level);
 	fprintf(fp, "	setParameter(kb2_Input, %ff);\n", fb2_Input);
@@ -804,7 +1132,11 @@ void BufferSynth2::Save2Cpp()
 	fprintf(fp, "	setParameter(kb2_Envelope, %ff);\n", fb2_Envelope);
 	fprintf(fp, "	setParameter(kb2_ReadPosition, %ff);\n", fb2_ReadPosition);
 	fprintf(fp, "	setParameter(kb2_ResetRPOnMIDINote, %ff);\n", fb2_ResetRPOnMIDINote);
+<<<<<<< HEAD
 	fprintf(fp, "	setParameter(kb2_Pan, %ff);\n", fb2_Pan);
+=======
+	fprintf(fp, "	setParameter(kb2_Pan, %ff);\n", fb2_Pan);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	fprintf(fp, "	setParameter(kb2_IPGain, %ff);\n", fb2_IPGain);
 
 	fprintf(fp, "	setParameter(kae_OnOff, %ff);\n", fae_OnOff);
@@ -880,7 +1212,11 @@ void BufferSynth2::Save2Cpp()
 	fprintf(fp, "	pd->presets[curProgram].b1_InvertSize.MIDICC = %d;\n", pd->presets[curProgram].b1_InvertSize.MIDICC);
 	fprintf(fp, "	pd->presets[curProgram].b1_ReadPosition.MIDICC = %d;\n", pd->presets[curProgram].b1_ReadPosition.MIDICC);
 	fprintf(fp, "	pd->presets[curProgram].b1_ResetRPOnMIDINote.MIDICC = %d;\n", pd->presets[curProgram].b1_ResetRPOnMIDINote.MIDICC);
+<<<<<<< HEAD
 	fprintf(fp, "	pd->presets[curProgram].b1_Pan.MIDICC = %d;\n", pd->presets[curProgram].b1_Pan.MIDICC);
+=======
+	fprintf(fp, "	pd->presets[curProgram].b1_Pan.MIDICC = %d;\n", pd->presets[curProgram].b1_Pan.MIDICC);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	fprintf(fp, "	pd->presets[curProgram].b1_IPGain.MIDICC = %d;\n", pd->presets[curProgram].b1_IPGain.MIDICC);
 
 	fprintf(fp, "	pd->presets[curProgram].b2_Start.MIDICC = %d;\n", pd->presets[curProgram].b2_Start.MIDICC);
@@ -906,7 +1242,11 @@ void BufferSynth2::Save2Cpp()
 	fprintf(fp, "	pd->presets[curProgram].b2_Envelope.MIDICC = %d;\n", pd->presets[curProgram].b2_Envelope.MIDICC);
 	fprintf(fp, "	pd->presets[curProgram].b2_ReadPosition.MIDICC = %d;\n", pd->presets[curProgram].b2_ReadPosition.MIDICC);
 	fprintf(fp, "	pd->presets[curProgram].b2_ResetRPOnMIDINote.MIDICC = %d;\n", pd->presets[curProgram].b2_ResetRPOnMIDINote.MIDICC);
+<<<<<<< HEAD
 	fprintf(fp, "	pd->presets[curProgram].b2_Pan.MIDICC = %d;\n", pd->presets[curProgram].b2_Pan.MIDICC);
+=======
+	fprintf(fp, "	pd->presets[curProgram].b2_Pan.MIDICC = %d;\n", pd->presets[curProgram].b2_Pan.MIDICC);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	fprintf(fp, "	pd->presets[curProgram].b2_IPGain.MIDICC = %d;\n", pd->presets[curProgram].b2_IPGain.MIDICC);
 
 	fprintf(fp, "	pd->presets[curProgram].ae_OnOff.MIDICC = %d;\n", pd->presets[curProgram].ae_OnOff.MIDICC);
@@ -1085,8 +1425,13 @@ long BufferSynth2::processEvents(VstEvents *ev)
 			if(note == pd->presets[curProgram].b1_ResetRPOnMIDINote.MIDICC)
 				setParameter(kb1_ResetRPOnMIDINote, (float)nvol);
 			if(note == pd->presets[curProgram].b1_Pan.MIDICC)
+<<<<<<< HEAD
 				setParameter(kb1_Pan, (float)nvol);
 			if(note == pd->presets[curProgram].b1_IPGain.MIDICC)
+=======
+				setParameter(kb1_Pan, (float)nvol);
+			if(note == pd->presets[curProgram].b1_IPGain.MIDICC)
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				setParameter(kb1_IPGain, (float)nvol);
 			if(note == pd->presets[curProgram].b2_Start.MIDICC)
 				setParameter(kb2_Start, (float)nvol);
@@ -1137,8 +1482,13 @@ long BufferSynth2::processEvents(VstEvents *ev)
 			if(note == pd->presets[curProgram].b2_ResetRPOnMIDINote.MIDICC)
 				setParameter(kb2_ResetRPOnMIDINote, (float)nvol);
 			if(note == pd->presets[curProgram].b2_Pan.MIDICC)
+<<<<<<< HEAD
 				setParameter(kb2_Pan, (float)nvol);
 			if(note == pd->presets[curProgram].b2_IPGain.MIDICC)
+=======
+				setParameter(kb2_Pan, (float)nvol);
+			if(note == pd->presets[curProgram].b2_IPGain.MIDICC)
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				setParameter(kb2_IPGain, (float)nvol);
 			if(note == pd->presets[curProgram].ae_Attack.MIDICC)
 				setParameter(kae_Attack, (float)nvol);
@@ -1331,11 +1681,19 @@ long BufferSynth2::processEvents(VstEvents *ev)
 			{	
 				pd->presets[curProgram].b1_Pan.MIDICC = note;
 				setParameter(kb1_Pan, (float)nvol);
+<<<<<<< HEAD
 			}
 			else if(CurrentParam == kb1_IPGain)
 			{	
 				pd->presets[curProgram].b1_IPGain.MIDICC = note;
 				setParameter(kb1_IPGain, (float)nvol);
+=======
+			}
+			else if(CurrentParam == kb1_IPGain)
+			{	
+				pd->presets[curProgram].b1_IPGain.MIDICC = note;
+				setParameter(kb1_IPGain, (float)nvol);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			}
 			else if(CurrentParam == kb2_Start)
 			{	
@@ -1456,11 +1814,19 @@ long BufferSynth2::processEvents(VstEvents *ev)
 			{	
 				pd->presets[curProgram].b2_Pan.MIDICC = note;
 				setParameter(kb2_Pan, (float)nvol);
+<<<<<<< HEAD
 			}
 			else if(CurrentParam == kb2_IPGain)
 			{	
 				pd->presets[curProgram].b2_IPGain.MIDICC = note;
 				setParameter(kb2_IPGain, (float)nvol);
+=======
+			}
+			else if(CurrentParam == kb2_IPGain)
+			{	
+				pd->presets[curProgram].b2_IPGain.MIDICC = note;
+				setParameter(kb2_IPGain, (float)nvol);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			}
 			else if(CurrentParam == kae_OnOff)
 			{	
@@ -1778,12 +2144,21 @@ void BufferSynth2::suspend()
 
 //--------------------------------------------------------------------------
 long BufferSynth2::getChunk (void **data, bool isPreset)
+<<<<<<< HEAD
 {
 	int i;
 	for(i=0;i<kNumPrograms;i++)
 	{
 		if(pd->presets[i].sett_SaveBufferContents.val < 0.5f)
 			strcpy(pd->presets[i].patchPath, "");
+=======
+{
+	int i;
+	for(i=0;i<kNumPrograms;i++)
+	{
+		if(pd->presets[i].sett_SaveBufferContents.val < 0.5f)
+			strcpy(pd->presets[i].patchPath, "");
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	}
     if(isPreset) //true = patch, false = bank
     {
@@ -1817,10 +2192,17 @@ long BufferSynth2::setChunk (void *data, long byteSize, bool isPreset)
 		memset(pd, 0, sizeof(BS2PresetData));
 		memcpy(pd, (BS2PresetData *)data, sizeof(BS2PresetData));
     }
+<<<<<<< HEAD
 	setProgram(curProgram);
 
 	//And load the .bsp file if we're supposed to.
 	if(strcmp(pd->presets[curProgram].patchPath, "")!=0)
+=======
+	setProgram(curProgram);
+
+	//And load the .bsp file if we're supposed to.
+	if(strcmp(pd->presets[curProgram].patchPath, "")!=0)
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		LoadPatch(pd->presets[curProgram].patchPath);
 
     return 1;
@@ -1875,7 +2257,11 @@ void BufferSynth2::setProgram(long program)
 
 	setParameter(kb1_ReadPosition,			pd->presets[curProgram].b1_ReadPosition.val);
 	setParameter(kb1_ResetRPOnMIDINote,		pd->presets[curProgram].b1_ResetRPOnMIDINote.val);
+<<<<<<< HEAD
 	setParameter(kb1_Pan,					pd->presets[curProgram].b1_Pan.val);
+=======
+	setParameter(kb1_Pan,					pd->presets[curProgram].b1_Pan.val);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	setParameter(kb1_IPGain,				pd->presets[curProgram].b1_IPGain.val);
 
 	//buffer 2
@@ -1920,7 +2306,11 @@ void BufferSynth2::setProgram(long program)
 	setParameter(kb2_Envelope,				pd->presets[curProgram].b2_Envelope.val);
 	setParameter(kb2_ReadPosition,			pd->presets[curProgram].b2_ReadPosition.val);
 	setParameter(kb2_ResetRPOnMIDINote,		pd->presets[curProgram].b2_ResetRPOnMIDINote.val);
+<<<<<<< HEAD
 	setParameter(kb2_Pan,					pd->presets[curProgram].b2_Pan.val);
+=======
+	setParameter(kb2_Pan,					pd->presets[curProgram].b2_Pan.val);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	setParameter(kb2_IPGain,				pd->presets[curProgram].b2_IPGain.val);
 
 	//amplitude envelope
@@ -1945,7 +2335,11 @@ void BufferSynth2::setProgram(long program)
 	setParameter(ke2_Direction,				pd->presets[curProgram].e2_Direction.val);
 	setParameter(ke2_ModDepth,				pd->presets[curProgram].e2_ModDepth.val);
 
+<<<<<<< HEAD
 	//LFO1
+=======
+	//LFO1
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	setParameter(klfo1_TempoSync,			pd->presets[curProgram].lfo1_TempoSync.val); //do this first, because Freq_Note relies on it...
 	setParameter(klfo1_Freq_Note,			pd->presets[curProgram].lfo1_Freq_Note.val);
 	setParameter(klfo1_Waveform,			pd->presets[curProgram].lfo1_Waveform.val);
@@ -1954,7 +2348,11 @@ void BufferSynth2::setProgram(long program)
 	setParameter(klfo1_Destination,			pd->presets[curProgram].lfo1_Destination.val);
 	setParameter(klfo1_ModDepth,			pd->presets[curProgram].lfo1_ModDepth.val);
 
+<<<<<<< HEAD
 	//LFO2
+=======
+	//LFO2
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	setParameter(klfo2_TempoSync,			pd->presets[curProgram].lfo2_TempoSync.val);
 	setParameter(klfo2_Freq_Note,			pd->presets[curProgram].lfo2_Freq_Note.val);
 	setParameter(klfo2_Waveform,			pd->presets[curProgram].lfo2_Waveform.val);
@@ -2010,7 +2408,11 @@ bool BufferSynth2::getProgramNameIndexed (long category, long index, char* text)
     {
       strcpy(text,pd->presets[index].name);
       return true;
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
     return false;
 }
 
@@ -2073,6 +2475,7 @@ void BufferSynth2::setEnd1FromStart(float val)
 //----------------------------------------------------------------------------
 void BufferSynth2::setSize2FromStartEnd(float val)
 {
+<<<<<<< HEAD
 	fb2_Size = pd->presets[curProgram].b2_Size.val = val;
 	if(fb2_InvertSize < 0.5f)
 	{
@@ -2091,28 +2494,66 @@ void BufferSynth2::setSize2FromStartEnd(float val)
 
 	if(NoteMaster)
 		NoteMaster->SetParameter(kb2_Size, fb2_Size);
+=======
+	fb2_Size = pd->presets[curProgram].b2_Size.val = val;
+	if(fb2_InvertSize < 0.5f)
+	{
+		if((fb2_SizeLessThanMaxFreezes > 0.5f)&&(fb2_Size < 1.0f))
+			setParameter(kb2_Freeze, 1.0f);
+		else if(fb2_SizeLessThanMaxFreezes > 0.5f)
+			setParameter(kb2_Freeze, 0.0f);
+	}
+	else
+	{
+		if((fb2_SizeLessThanMaxFreezes > 0.5f)&&((1.0f-fb2_Size) < 1.0f))
+			setParameter(kb2_Freeze, 1.0f);
+		else if(fb2_SizeLessThanMaxFreezes > 0.5f)
+			setParameter(kb2_Freeze, 0.0f);
+	}
+
+	if(NoteMaster)
+		NoteMaster->SetParameter(kb2_Size, fb2_Size);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 }
 
 //----------------------------------------------------------------------------
 void BufferSynth2::setStart2FromEnd(float val)
 {
+<<<<<<< HEAD
 	if(val < 0.0f)
 		val = 0.0f;
 	fb2_Start = pd->presets[curProgram].b2_Start.val = val;
 
 	if(NoteMaster)
 		NoteMaster->SetParameter(kb2_Start, fb2_Start);
+=======
+	if(val < 0.0f)
+		val = 0.0f;
+	fb2_Start = pd->presets[curProgram].b2_Start.val = val;
+
+	if(NoteMaster)
+		NoteMaster->SetParameter(kb2_Start, fb2_Start);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 }
 
 //----------------------------------------------------------------------------
 void BufferSynth2::setEnd2FromStart(float val)
 {
+<<<<<<< HEAD
 	if(val > 1.0f)
 		val = 1.0f;
 	fb2_End = pd->presets[curProgram].b2_End.val = val;
 
 	if(NoteMaster)
 		NoteMaster->SetParameter(kb2_End, fb2_End);
+=======
+	if(val > 1.0f)
+		val = 1.0f;
+	fb2_End = pd->presets[curProgram].b2_End.val = val;
+
+	if(NoteMaster)
+		NoteMaster->SetParameter(kb2_End, fb2_End);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 }
 
 //----------------------------------------------------------------------------
@@ -2262,6 +2703,7 @@ void BufferSynth2::setParameter(long index, float value)
 				NoteMaster->SetParameter(kb1_RetainSize, fb1_RetainSize);
 			break;
 		case kb1_Size2Tempo :
+<<<<<<< HEAD
 			fb1_Size2Tempo =			pd->presets[curProgram].b1_Size2Tempo.val =			value;
 
 			if(fb1_Speed_Pitch == 0.5f)
@@ -2278,90 +2720,156 @@ void BufferSynth2::setParameter(long index, float value)
 				speedval += 1.0f;   //val = 1->4
 			}
 			else
+=======
+			fb1_Size2Tempo =			pd->presets[curProgram].b1_Size2Tempo.val =			value;
+
+			if(fb1_Speed_Pitch == 0.5f)
+				speedval = 1.0f;
+			else if(fb1_Speed_Pitch < 0.5f)
+			{
+				speedval = fb1_Speed_Pitch * 1.5f;	//val = 0->0.75
+				speedval += 0.25f;  //val = 0->1 (effectively 0.25->1)
+			}
+			else if(fb1_Speed_Pitch <= 1.0f)
+			{
+				speedval = fb1_Speed_Pitch - 0.5f;   //val = 0->0.5
+				speedval *= 6.0f;	//val = 0->3
+				speedval += 1.0f;   //val = 1->4
+			}
+			else
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				speedval = 1.0f;
 
 			if(fb1_Size2Tempo < (1.0f/13.0f))
 				break;
 			else if(fb1_Size2Tempo < (2.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);	//i.e. at 60bpm (44100Hz), 1 beat = 44100 samples (the entire buffer)
+=======
+				temp45 = (60.0f/tempo);	//i.e. at 60bpm (44100Hz), 1 beat = 44100 samples (the entire buffer)
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/16.0f);
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (3.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/8.0f);
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (4.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/6.0f);
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (5.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/4.0f);
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (6.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/3.0f);
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (7.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/2.0f);
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (8.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				//temp45 *= (1.0f/2.0f);
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (9.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 2.0f;
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (10.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 3.0f;
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (11.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 4.0f;
 				setParameter(kb1_Size, temp45);
 			}
 			else if(fb1_Size2Tempo < (12.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 6.0f;
 				setParameter(kb1_Size, temp45);
 			}
 			else
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 8.0f;
 				setParameter(kb1_Size, temp45);
@@ -2418,6 +2926,7 @@ void BufferSynth2::setParameter(long index, float value)
 			if(NoteMaster)
 				NoteMaster->SetParameter(kb1_OnlyOPWhenFrozen, fb1_OnlyOPWhenFrozen);
 			break;
+<<<<<<< HEAD
 		case kb1_MIDINotesSetFreeze :
 			if((fb1_MIDINotesSetFreeze > 0.5f)&&(value < 0.5f)) //so that freeze is switched off when 'MIDI Notes Set Freeze' is switched off
 			{
@@ -2425,6 +2934,15 @@ void BufferSynth2::setParameter(long index, float value)
 				setParameter(kb1_Freeze, 0.0f);
 			}
 			else
+=======
+		case kb1_MIDINotesSetFreeze :
+			if((fb1_MIDINotesSetFreeze > 0.5f)&&(value < 0.5f)) //so that freeze is switched off when 'MIDI Notes Set Freeze' is switched off
+			{
+				fb1_MIDINotesSetFreeze =	pd->presets[curProgram].b1_MIDINotesSetFreeze.val =	value;
+				setParameter(kb1_Freeze, 0.0f);
+			}
+			else
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				fb1_MIDINotesSetFreeze =	pd->presets[curProgram].b1_MIDINotesSetFreeze.val =	value;
 
 			if(NoteMaster)
@@ -2470,6 +2988,7 @@ void BufferSynth2::setParameter(long index, float value)
 
 			if(NoteMaster)
 				NoteMaster->SetParameter(kb1_Pan, fb1_Pan);
+<<<<<<< HEAD
 			break;
 		case kb1_IPGain :
 			fb1_IPGain =			pd->presets[curProgram].b1_IPGain.val =			value;
@@ -2600,6 +3119,138 @@ void BufferSynth2::setParameter(long index, float value)
 
 			if(NoteMaster)
 				NoteMaster->SetParameter(kb2_Size, fb2_Size);
+=======
+			break;
+		case kb1_IPGain :
+			fb1_IPGain =			pd->presets[curProgram].b1_IPGain.val =			value;
+
+			if(NoteMaster)
+				NoteMaster->SetParameter(kb1_IPGain, fb1_IPGain);
+			break;
+
+			//buffer 2
+		case kb2_Start :
+			if(value > fb2_End)	//use value because the new fb2_Start hasn't been calculated yet
+				value = fb2_End;
+			if(fb2_RetainSize < 0.5f)
+			{
+				fb2_Start = pd->presets[curProgram].b2_Start.val = value;
+				setSize2FromStartEnd((fb2_End - fb2_Start));
+			}
+			else
+			{
+				if((value+fb2_Size) < 1.0f)
+				{
+					fb2_Start = pd->presets[curProgram].b2_Start.val = value;
+					setEnd2FromStart((fb2_Start+fb2_Size));
+				}
+				else
+				{
+					fb2_Start = pd->presets[curProgram].b2_Start.val = (fb2_End - fb2_Size);
+					setEnd2FromStart(1.0f);
+				}
+			}
+
+			if(NoteMaster)
+				NoteMaster->SetParameter(kb2_Start, fb2_Start);
+			break;
+		case kb2_End :
+			if(value < fb2_Start)
+				value = fb2_Start;
+			if(fb2_RetainSize < 0.5f)
+			{
+				fb2_End = pd->presets[curProgram].b2_End.val = value;
+				setSize2FromStartEnd((fb2_End - fb2_Start));
+			}
+			else
+			{
+				if((value-fb2_Size) >= 0.0f)
+				{
+					fb2_End = pd->presets[curProgram].b2_End.val = value;
+					setStart2FromEnd((fb2_End-fb2_Size));
+				}
+				else
+				{
+					fb2_End = pd->presets[curProgram].b2_End.val = fb2_Size;
+					setStart2FromEnd(0.0f);
+				}
+			}
+
+			if(NoteMaster)
+				NoteMaster->SetParameter(kb2_End, fb2_End);
+			break;
+		case kb2_Size :
+			fb2_Size = pd->presets[curProgram].b2_Size.val = value;
+			if(fb2_InvertSize < 0.5f)
+			{
+				if(fb2_SizeFrom < 0.5f)
+				{
+					if((fb2_Start+fb2_Size) > 1.0f)
+					{
+						//setParameter(kb2_End, 1.0f);
+						setEnd2FromStart(1.0f);
+						//setParameter(kb2_Start, fb2_Start-((fb2_Start+fb2_Size)-1.0f));
+						setStart2FromEnd(fb2_Start-((fb2_Start+fb2_Size)-1.0f));
+					}
+					else
+						//setParameter(kb2_End, (fb2_Start+fb2_Size));
+						setEnd2FromStart((fb2_Start+fb2_Size));
+				}
+				else
+				{
+					if((fb2_End-fb2_Size) < 0.0f)
+					{
+						//setParameter(kb2_Start, 0.0f);
+						setStart2FromEnd(0.0f);
+						//setParameter(kb2_End, fb2_End+((fb2_End-fb2_Size)*(-1.0f)));
+						setEnd2FromStart(fb2_End+((fb2_End-fb2_Size)*(-1.0f)));
+					}
+					else
+						//setParameter(kb2_Start, (fb2_End-fb2_Size));
+						setStart2FromEnd((fb2_End-fb2_Size));
+				}
+				if((fb2_SizeLessThanMaxFreezes > 0.5f)&&(fb2_Size < 1.0f))
+					setParameter(kb2_Freeze, 1.0f);
+				else if(fb2_SizeLessThanMaxFreezes > 0.5f)
+					setParameter(kb2_Freeze, 0.0f);
+			}
+			else
+			{
+				if(fb2_SizeFrom < 0.5f)
+				{
+					if((fb2_Start+(1.0f-fb2_Size)) > 1.0f)
+					{
+						//setParameter(kb2_End, 1.0f);
+						setEnd2FromStart(1.0f);
+						//setParameter(kb2_Start, fb2_Start-((fb2_Start+(1.0f-fb2_Size))-1.0f));
+						setStart2FromEnd(fb2_Start-((fb2_Start+(1.0f-fb2_Size))-1.0f));
+					}
+					else
+						//setParameter(kb2_End, (fb2_Start+(1.0f-fb2_Size)));
+						setEnd2FromStart((fb2_Start+(1.0f-fb2_Size)));
+				}
+				else
+				{
+					if((fb2_End-(1.0f-fb2_Size)) < 0.0f)
+					{
+						//setParameter(kb2_Start, 0.0f);
+						setStart2FromEnd(0.0f);
+						//setParameter(kb2_End, fb2_End+((fb2_End-(1.0f-fb2_Size))*(-1.0f)));
+						setEnd2FromStart(fb2_End+((fb2_End-(1.0f-fb2_Size))*(-1.0f)));
+					}
+					else
+						//setParameter(kb2_Start, (fb2_End-(1.0f-fb2_Size)));
+						setStart2FromEnd((fb2_End-(1.0f-fb2_Size)));
+				}
+				if((fb2_SizeLessThanMaxFreezes > 0.5f)&&((1.0f-fb2_Size) < 1.0f))
+					setParameter(kb2_Freeze, 1.0f);
+				else if(fb2_SizeLessThanMaxFreezes > 0.5f)
+					setParameter(kb2_Freeze, 0.0f);
+			}
+
+			if(NoteMaster)
+				NoteMaster->SetParameter(kb2_Size, fb2_Size);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case kb2_SizeFrom :
 			fb2_SizeFrom =				pd->presets[curProgram].b2_SizeFrom.val =				value;
@@ -2614,6 +3265,7 @@ void BufferSynth2::setParameter(long index, float value)
 				NoteMaster->SetParameter(kb2_RetainSize, fb2_RetainSize);
 			break;
 		case kb2_Size2Tempo :
+<<<<<<< HEAD
 			fb2_Size2Tempo =			pd->presets[curProgram].b2_Size2Tempo.val =			value;
 
 			if(fb2_Speed_Pitch == 0.5f)
@@ -2630,90 +3282,156 @@ void BufferSynth2::setParameter(long index, float value)
 				speedval += 1.0f;
 			}
 			else
+=======
+			fb2_Size2Tempo =			pd->presets[curProgram].b2_Size2Tempo.val =			value;
+
+			if(fb2_Speed_Pitch == 0.5f)
+				speedval = 1.0f;
+			else if(fb2_Speed_Pitch < 0.5f)
+			{
+				speedval = fb2_Speed_Pitch * 1.5f;	//val = 0->0.75
+				speedval += 0.25f;//val = 0->1 (effectively 0.25->1)
+			}
+			else if(fb2_Speed_Pitch <= 1.0f)
+			{
+				speedval = fb2_Speed_Pitch - 0.5f;
+				speedval *= 6.0f;
+				speedval += 1.0f;
+			}
+			else
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				speedval = 1.0f;
 
 			if(fb2_Size2Tempo < (1.0f/13.0f))
 				break;
 			else if(fb2_Size2Tempo < (2.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);	//i.e. at 60bpm (44100Hz), 1 beat = 44100 samples (the entire buffer)
+=======
+				temp45 = (60.0f/tempo);	//i.e. at 60bpm (44100Hz), 1 beat = 44100 samples (the entire buffer)
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/16.0f);
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (3.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/8.0f);
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (4.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/6.0f);
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (5.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/4.0f);
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (6.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/3.0f);
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (7.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= (1.0f/2.0f);
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (8.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				//temp45 *= (1.0f/2.0f);
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (9.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 2.0f;
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (10.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 3.0f;
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (11.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 4.0f;
 				setParameter(kb2_Size, temp45);
 			}
 			else if(fb2_Size2Tempo < (12.0f/13.0f))
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 6.0f;
 				setParameter(kb2_Size, temp45);
 			}
 			else
 			{
+<<<<<<< HEAD
 				temp45 = (60.0f/tempo);
+=======
+				temp45 = (60.0f/tempo);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				temp45 /= speedval;
 				temp45 *= 8.0f;
 				setParameter(kb2_Size, temp45);
@@ -2770,6 +3488,7 @@ void BufferSynth2::setParameter(long index, float value)
 			if(NoteMaster)
 				NoteMaster->SetParameter(kb2_OnlyOPWhenFrozen, fb2_OnlyOPWhenFrozen);
 			break;
+<<<<<<< HEAD
 		case kb2_MIDINotesSetFreeze :
 			if((fb2_MIDINotesSetFreeze > 0.5f)&&(value < 0.5f)) //so that freeze is switched off when 'MIDI Notes Set Freeze' is switched off
 			{
@@ -2777,6 +3496,15 @@ void BufferSynth2::setParameter(long index, float value)
 				setParameter(kb2_Freeze, 0.0f);
 			}
 			else
+=======
+		case kb2_MIDINotesSetFreeze :
+			if((fb2_MIDINotesSetFreeze > 0.5f)&&(value < 0.5f)) //so that freeze is switched off when 'MIDI Notes Set Freeze' is switched off
+			{
+				fb2_MIDINotesSetFreeze =	pd->presets[curProgram].b2_MIDINotesSetFreeze.val =	value;
+				setParameter(kb2_Freeze, 0.0f);
+			}
+			else
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 				fb2_MIDINotesSetFreeze =	pd->presets[curProgram].b2_MIDINotesSetFreeze.val =	value;
 
 			if(NoteMaster)
@@ -2835,12 +3563,21 @@ void BufferSynth2::setParameter(long index, float value)
 
 			if(NoteMaster)
 				NoteMaster->SetParameter(kb2_Pan, fb2_Pan);
+<<<<<<< HEAD
 			break;
 		case kb2_IPGain :
 			fb2_IPGain =			pd->presets[curProgram].b2_IPGain.val =			value;
 
 			if(NoteMaster)
 				NoteMaster->SetParameter(kb2_IPGain, fb2_IPGain);
+=======
+			break;
+		case kb2_IPGain :
+			fb2_IPGain =			pd->presets[curProgram].b2_IPGain.val =			value;
+
+			if(NoteMaster)
+				NoteMaster->SetParameter(kb2_IPGain, fb2_IPGain);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 
 			//amplitude envelope
@@ -3146,7 +3883,11 @@ float BufferSynth2::getParameter(long index)
 		case kb1_InvertSize :			v = fb1_InvertSize; break;
 		case kb1_ReadPosition :			v = fb1_ReadPosition; break;
 		case kb1_ResetRPOnMIDINote :	v = fb1_ResetRPOnMIDINote; break;
+<<<<<<< HEAD
 		case kb1_Pan :					v = fb1_Pan; break;
+=======
+		case kb1_Pan :					v = fb1_Pan; break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb1_IPGain :				v = fb1_IPGain; break;
 
 		//buffer 2
@@ -3173,7 +3914,11 @@ float BufferSynth2::getParameter(long index)
 		case kb2_Envelope :				v = fb2_Envelope; break;
 		case kb2_ReadPosition :			v = fb2_ReadPosition; break;
 		case kb2_ResetRPOnMIDINote :	v = fb2_ResetRPOnMIDINote; break;
+<<<<<<< HEAD
 		case kb2_Pan :					v = fb2_Pan; break;
+=======
+		case kb2_Pan :					v = fb2_Pan; break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb2_IPGain :				v = fb2_IPGain; break;
 
 		//amplitude envelope
@@ -3249,11 +3994,19 @@ void BufferSynth2::getParameterLabel(long index, char *label)
 		case kb1_RetainSize :			strcpy(label, " "); break;
 		case kb1_Size2Tempo :			strcpy(label, " "); break;
 		case kb1_RecThreshold :			strcpy(label, "dB"); break;
+<<<<<<< HEAD
 		case kb1_Speed_Pitch :
 			if(fsett_SynthMode < 0.5f)
 				strcpy(label, "x");
 			else
 				strcpy(label, "oct");
+=======
+		case kb1_Speed_Pitch :
+			if(fsett_SynthMode < 0.5f)
+				strcpy(label, "x");
+			else
+				strcpy(label, "oct");
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case kb1_Level :				strcpy(label, "dB"); break;
 		case kb1_Input :				strcpy(label, " "); break;
@@ -3266,6 +4019,7 @@ void BufferSynth2::getParameterLabel(long index, char *label)
 		case kb1_SizeLessThanMaxFreezes:strcpy(label, " "); break;
 		case kb1_InvertSize :			strcpy(label, " "); break;
 		case kb1_ReadPosition :			strcpy(label, "samples"); break;
+<<<<<<< HEAD
 		case kb1_ResetRPOnMIDINote :	strcpy(label, " "); break;
 		case kb1_Pan :
 			if(fb1_Pan < 0.5f)
@@ -3275,6 +4029,17 @@ void BufferSynth2::getParameterLabel(long index, char *label)
 			else
 				strcpy(label, " ");
 			break;
+=======
+		case kb1_ResetRPOnMIDINote :	strcpy(label, " "); break;
+		case kb1_Pan :
+			if(fb1_Pan < 0.5f)
+				strcpy(label, "l");
+			else if(fb1_Pan > 0.5f)
+				strcpy(label, "r");
+			else
+				strcpy(label, " ");
+			break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb1_IPGain :				strcpy(label, "dB"); break;
 
 		//buffer 2
@@ -3284,12 +4049,21 @@ void BufferSynth2::getParameterLabel(long index, char *label)
 		case kb2_SizeFrom :				strcpy(label, " "); break;
 		case kb2_RetainSize :			strcpy(label, " "); break;
 		case kb2_Size2Tempo :			strcpy(label, " "); break;
+<<<<<<< HEAD
 		case kb2_RecThreshold :			strcpy(label, "dB"); break;
 		case kb2_Speed_Pitch :
 			if(fsett_SynthMode < 0.5f)
 				strcpy(label, "x");
 			else
 				strcpy(label, "oct");
+=======
+		case kb2_RecThreshold :			strcpy(label, "dB"); break;
+		case kb2_Speed_Pitch :
+			if(fsett_SynthMode < 0.5f)
+				strcpy(label, "x");
+			else
+				strcpy(label, "oct");
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case kb2_Level :				strcpy(label, "dB"); break;
 		case kb2_Input :				strcpy(label, " "); break;
@@ -3305,6 +4079,7 @@ void BufferSynth2::getParameterLabel(long index, char *label)
 		case kb2_InvertSize :			strcpy(label, " "); break;
 		case kb2_Envelope :				strcpy(label, " "); break;
 		case kb2_ReadPosition :			strcpy(label, "samples"); break;
+<<<<<<< HEAD
 		case kb2_ResetRPOnMIDINote :	strcpy(label, " "); break;
 		case kb2_Pan :
 			if(fb2_Pan < 0.5f)
@@ -3314,6 +4089,17 @@ void BufferSynth2::getParameterLabel(long index, char *label)
 			else
 				strcpy(label, " ");
 			break;
+=======
+		case kb2_ResetRPOnMIDINote :	strcpy(label, " "); break;
+		case kb2_Pan :
+			if(fb2_Pan < 0.5f)
+				strcpy(label, "l");
+			else if(fb2_Pan > 0.5f)
+				strcpy(label, "r");
+			else
+				strcpy(label, " ");
+			break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb2_IPGain :				strcpy(label, "dB"); break;
 
 		//amplitude envelope
@@ -3339,11 +4125,19 @@ void BufferSynth2::getParameterLabel(long index, char *label)
 		case ke2_ModDepth :				strcpy(label, "dB"); break;
 
 		//LFO 1
+<<<<<<< HEAD
 		case klfo1_Freq_Note :
 			if(flfo1_TempoSync < 0.5f)
 				strcpy(label, "Hz");
 			else
 				strcpy(label, "Beat");
+=======
+		case klfo1_Freq_Note :
+			if(flfo1_TempoSync < 0.5f)
+				strcpy(label, "Hz");
+			else
+				strcpy(label, "Beat");
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case klfo1_TempoSync :			strcpy(label, " "); break;
 		case klfo1_Waveform :			strcpy(label, " "); break;
@@ -3352,12 +4146,21 @@ void BufferSynth2::getParameterLabel(long index, char *label)
 		case klfo1_Destination :		strcpy(label, " "); break;
 		case klfo1_ModDepth :			strcpy(label, "dB"); break;
 
+<<<<<<< HEAD
 		//LFO 2
 		case klfo2_Freq_Note :
 			if(flfo2_TempoSync < 0.5f)
 				strcpy(label, "Hz");
 			else
 				strcpy(label, "Beat");
+=======
+		//LFO 2
+		case klfo2_Freq_Note :
+			if(flfo2_TempoSync < 0.5f)
+				strcpy(label, "Hz");
+			else
+				strcpy(label, "Beat");
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case klfo2_TempoSync :			strcpy(label, " "); break;
 		case klfo2_Waveform :			strcpy(label, " "); break;
@@ -3390,8 +4193,13 @@ void BufferSynth2::getParameterLabel(long index, char *label)
 //Hz2string etc.)
 //----------------------------------------------------------------------------
 void BufferSynth2::getParameterDisplay(long index, char *text)
+<<<<<<< HEAD
 {
 	float tempfloat;
+=======
+{
+	float tempfloat;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
 	switch (index)
 	{
@@ -3403,6 +4211,7 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 		case kb1_RetainSize :			onoff2string(fb1_RetainSize, text); break;
 		case kb1_Size2Tempo :			size2tempo2string(fb1_Size2Tempo, text); break;
 		case kb1_RecThreshold :			dB2string(fb1_RecThreshold, text); break;
+<<<<<<< HEAD
 		case kb1_Speed_Pitch :
 			if(fsett_SynthMode < 0.5f)
 			{
@@ -3426,6 +4235,31 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 				tempfloat *= 4.0f;
 			}
 			float2string(tempfloat, text);
+=======
+		case kb1_Speed_Pitch :
+			if(fsett_SynthMode < 0.5f)
+			{
+				if(fb1_Speed_Pitch == 0.5f)
+					tempfloat = 1.0f;
+				else if(fb1_Speed_Pitch < 0.5f)
+				{
+					tempfloat = fb1_Speed_Pitch * 1.5f;
+					tempfloat += 0.25f;
+				}
+				else if(fb1_Speed_Pitch <= 1.0f)
+				{
+					tempfloat = fb1_Speed_Pitch - 0.5f;
+					tempfloat *= 6.0f;
+					tempfloat += 1.0f;
+				}
+			}
+			else
+			{
+				tempfloat = fb1_Speed_Pitch - 0.5f;
+				tempfloat *= 4.0f;
+			}
+			float2string(tempfloat, text);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case kb1_Level :				dB2string((2.0f*fb1_Level), text); break;
 		case kb1_Input :				input2string(fb1_Input, text); break;
@@ -3439,7 +4273,11 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 		case kb1_InvertSize :			onoff2string(fb1_InvertSize, text); break;
 		case kb1_ReadPosition :			long2string((long)(BUFFERSIZE*fb1_ReadPosition), text); break;
 		case kb1_ResetRPOnMIDINote :	onoff2string(fb1_ResetRPOnMIDINote, text); break;
+<<<<<<< HEAD
 		case kb1_Pan :					float2string((float)fabs((fb1_Pan-0.5f)*2.0f), text); break;
+=======
+		case kb1_Pan :					float2string((float)fabs((fb1_Pan-0.5f)*2.0f), text); break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb1_IPGain :				dB2string((2.0f*fb1_IPGain), text); break;
 
 		//buffer 2
@@ -3449,6 +4287,7 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 		case kb2_SizeFrom :				sizefrom2string(fb2_SizeFrom, text); break;
 		case kb2_RetainSize :			onoff2string(fb2_RetainSize, text); break;
 		case kb2_Size2Tempo :			size2tempo2string(fb2_Size2Tempo, text); break;
+<<<<<<< HEAD
 		case kb2_RecThreshold :			dB2string(fb2_RecThreshold, text); break;
 		case kb2_Speed_Pitch :
 			if(fsett_SynthMode < 0.5f)
@@ -3473,6 +4312,32 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 				tempfloat *= 4.0f;
 			}
 			float2string(tempfloat, text);
+=======
+		case kb2_RecThreshold :			dB2string(fb2_RecThreshold, text); break;
+		case kb2_Speed_Pitch :
+			if(fsett_SynthMode < 0.5f)
+			{
+				if(fb2_Speed_Pitch == 0.5f)
+					tempfloat = 1.0f;
+				else if(fb2_Speed_Pitch < 0.5f)
+				{
+					tempfloat = fb2_Speed_Pitch * 1.5f;
+					tempfloat += 0.25f;
+				}
+				else if(fb2_Speed_Pitch <= 1.0f)
+				{
+					tempfloat = fb2_Speed_Pitch - 0.5f;
+					tempfloat *= 6.0f;
+					tempfloat += 1.0f;
+				}
+			}
+			else
+			{
+				tempfloat = fb2_Speed_Pitch - 0.5f;
+				tempfloat *= 4.0f;
+			}
+			float2string(tempfloat, text);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case kb2_Level :				dB2string((2.0f*fb2_Level), text); break;
 		case kb2_Input :				input2string(fb2_Input, text); break;
@@ -3489,7 +4354,11 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 		case kb2_Envelope :				onoff2string(fb2_Envelope, text); break;
 		case kb2_ReadPosition :			long2string((long)(BUFFERSIZE*fb2_ReadPosition), text); break;
 		case kb2_ResetRPOnMIDINote :	onoff2string(fb2_ResetRPOnMIDINote, text); break;
+<<<<<<< HEAD
 		case kb2_Pan :					float2string((float)fabs((fb2_Pan-0.5f)*2.0f), text); break;
+=======
+		case kb2_Pan :					float2string((float)fabs((fb2_Pan-0.5f)*2.0f), text); break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb2_IPGain :				dB2string((2.0f*fb2_IPGain), text); break;
 
 		//amplitude envelope
@@ -3515,6 +4384,7 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 		case ke2_ModDepth :				dB2string(fe2_ModDepth, text); break;
 
 		//LFO1
+<<<<<<< HEAD
 		case klfo1_Freq_Note :
 			if(flfo1_TempoSync < 0.5f)
 				float2string((30.0f*flfo1_Freq_Note), text);
@@ -3522,6 +4392,15 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 			{
 				lfonote2string(flfo1_Freq_Note, text);
 			}
+=======
+		case klfo1_Freq_Note :
+			if(flfo1_TempoSync < 0.5f)
+				float2string((30.0f*flfo1_Freq_Note), text);
+			else
+			{
+				lfonote2string(flfo1_Freq_Note, text);
+			}
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case klfo1_TempoSync :			temposync2string(flfo1_TempoSync, text); break;
 		case klfo1_Waveform :			wave2string(flfo1_Waveform, text); break;
@@ -3531,6 +4410,7 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 		case klfo1_ModDepth :			dB2string(flfo1_ModDepth, text); break;
 
 		//LFO2
+<<<<<<< HEAD
 		case klfo2_Freq_Note :
 			if(flfo2_TempoSync < 0.5f)
 				float2string((30.0f*flfo2_Freq_Note), text);
@@ -3538,6 +4418,15 @@ void BufferSynth2::getParameterDisplay(long index, char *text)
 			{
 				lfonote2string(flfo2_Freq_Note, text);
 			}
+=======
+		case klfo2_Freq_Note :
+			if(flfo2_TempoSync < 0.5f)
+				float2string((30.0f*flfo2_Freq_Note), text);
+			else
+			{
+				lfonote2string(flfo2_Freq_Note, text);
+			}
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case klfo2_TempoSync :			temposync2string(flfo2_TempoSync, text); break;
 		case klfo2_Waveform :			wave2string(flfo2_Waveform, text); break;
@@ -3578,11 +4467,19 @@ void BufferSynth2::getParameterName(long index, char *label)
 		case kb1_RetainSize :			strcpy(label, "Buffer1 Lock Size"); break;
 		case kb1_Size2Tempo :			strcpy(label, "Buffer1 Size2Tempo"); break;
 		case kb1_RecThreshold :			strcpy(label, "Buffer1 RecThresh"); break;
+<<<<<<< HEAD
 		case kb1_Speed_Pitch :
 			if(fsett_SynthMode < 0.5f)
 				strcpy(label, "Buffer1 Speed");
 			else
 				strcpy(label, "Buffer1 Pitch");
+=======
+		case kb1_Speed_Pitch :
+			if(fsett_SynthMode < 0.5f)
+				strcpy(label, "Buffer1 Speed");
+			else
+				strcpy(label, "Buffer1 Pitch");
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case kb1_Level :				strcpy(label, "Buffer1 Level"); break;
 		case kb1_Input :				strcpy(label, "Buffer1 Input"); break;
@@ -3596,7 +4493,11 @@ void BufferSynth2::getParameterName(long index, char *label)
 		case kb1_InvertSize :			strcpy(label, "Buffer1 Invert Size"); break;
 		case kb1_ReadPosition :			strcpy(label, "Buffer1 ReadPos"); break;
 		case kb1_ResetRPOnMIDINote :	strcpy(label, "Buffer1 ResetOnNote"); break;
+<<<<<<< HEAD
 		case kb1_Pan :					strcpy(label, "Buffer1 Pan"); break;
+=======
+		case kb1_Pan :					strcpy(label, "Buffer1 Pan"); break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb1_IPGain :				strcpy(label, "Buffer1 IP Gain"); break;
 
 		//buffer 2
@@ -3606,12 +4507,21 @@ void BufferSynth2::getParameterName(long index, char *label)
 		case kb2_SizeFrom :				strcpy(label, "Buffer2 Size From"); break;
 		case kb2_RetainSize :			strcpy(label, "Buffer2 Lock Size"); break;
 		case kb2_Size2Tempo :			strcpy(label, "Buffer2 Size2Tempo"); break;
+<<<<<<< HEAD
 		case kb2_RecThreshold :			strcpy(label, "Buffer2 RecThresh"); break;
 		case kb2_Speed_Pitch :
 			if(fsett_SynthMode < 0.5f)
 				strcpy(label, "Buffer2 Speed");
 			else
 				strcpy(label, "Buffer2 Pitch");
+=======
+		case kb2_RecThreshold :			strcpy(label, "Buffer2 RecThresh"); break;
+		case kb2_Speed_Pitch :
+			if(fsett_SynthMode < 0.5f)
+				strcpy(label, "Buffer2 Speed");
+			else
+				strcpy(label, "Buffer2 Pitch");
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			break;
 		case kb2_Level :				strcpy(label, "Buffer2 Level"); break;
 		case kb2_Input :				strcpy(label, "Buffer2 Input"); break;
@@ -3628,7 +4538,11 @@ void BufferSynth2::getParameterName(long index, char *label)
 		case kb2_Envelope :				strcpy(label, "Buffer2 Envelope"); break;
 		case kb2_ReadPosition :			strcpy(label, "Buffer2 ReadPos"); break;
 		case kb2_ResetRPOnMIDINote :	strcpy(label, "Buffer2 ResetOnNote"); break;
+<<<<<<< HEAD
 		case kb2_Pan :					strcpy(label, "Buffer2 Pan"); break;
+=======
+		case kb2_Pan :					strcpy(label, "Buffer2 Pan"); break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb2_IPGain :				strcpy(label, "Buffer2 IPGain"); break;
 
 		//amplitude envelope
@@ -3717,7 +4631,11 @@ float BufferSynth2::getCC(long index)
 		case kb1_InvertSize :			retval = (float)pd->presets[curProgram].b1_InvertSize.MIDICC; break;
 		case kb1_ReadPosition :			retval = (float)pd->presets[curProgram].b1_ReadPosition.MIDICC; break;
 		case kb1_ResetRPOnMIDINote :	retval = (float)pd->presets[curProgram].b1_ResetRPOnMIDINote.MIDICC; break;
+<<<<<<< HEAD
 		case kb1_Pan :					retval = (float)pd->presets[curProgram].b1_Pan.MIDICC; break;
+=======
+		case kb1_Pan :					retval = (float)pd->presets[curProgram].b1_Pan.MIDICC; break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb1_IPGain :				retval = (float)pd->presets[curProgram].b1_IPGain.MIDICC; break;
 
 		//buffer 2
@@ -3744,7 +4662,11 @@ float BufferSynth2::getCC(long index)
 		case kb2_Envelope :				retval = (float)pd->presets[curProgram].b2_Envelope.MIDICC; break;
 		case kb2_ReadPosition :			retval = (float)pd->presets[curProgram].b2_ReadPosition.MIDICC; break;
 		case kb2_ResetRPOnMIDINote :	retval = (float)pd->presets[curProgram].b2_ResetRPOnMIDINote.MIDICC; break;
+<<<<<<< HEAD
 		case kb2_Pan :					retval = (float)pd->presets[curProgram].b2_Pan.MIDICC; break;
+=======
+		case kb2_Pan :					retval = (float)pd->presets[curProgram].b2_Pan.MIDICC; break;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		case kb2_IPGain :				retval = (float)pd->presets[curProgram].b2_IPGain.MIDICC; break;
 
 		//amplitude envelope
@@ -3942,6 +4864,7 @@ void BufferSynth2::onoff2string(float value, char *text)
 		strcpy(text, "Off");
 	else
 		strcpy(text, "On");
+<<<<<<< HEAD
 }
 
 //----------------------------------------------------------------------------
@@ -4199,3 +5122,262 @@ void BufferSynth2::pcorrection2string(float value, char *text)
 	else
 		strcpy(text, "Nice");
 }
+=======
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::sizefrom2string(float value, char *text)
+{
+	if(value < 0.5)
+		strcpy(text, "Start");
+	else
+		strcpy(text, "End");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::size2tempo2string(float value, char *text)
+{
+	if(value < (1.0f/13.0f))
+		strcpy(text, "---");
+	else if(value < (2.0f/13.0f))
+		strcpy(text, "1/16");
+	else if(value < (3.0f/13.0f))
+		strcpy(text, "1/8");
+	else if(value < (4.0f/13.0f))
+		strcpy(text, "1/6");
+	else if(value < (5.0f/13.0f))
+		strcpy(text, "1/4");
+	else if(value < (6.0f/13.0f))
+		strcpy(text, "1/3");
+	else if(value < (7.0f/13.0f))
+		strcpy(text, "1/2");
+	else if(value < (8.0f/13.0f))
+		strcpy(text, "1");
+	else if(value < (9.0f/13.0f))
+		strcpy(text, "2");
+	else if(value < (10.0f/13.0f))
+		strcpy(text, "3");
+	else if(value < (11.0f/13.0f))
+		strcpy(text, "4");
+	else if(value < (12.0f/13.0f))
+		strcpy(text, "6");
+	else
+		strcpy(text, "8");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::input2string(float value, char *text)
+{
+	if(value < 0.33f)
+		strcpy(text, "Left");
+	else if(value < 0.66f)
+		strcpy(text, "Right");
+	else
+		strcpy(text, "Wave");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::float2string(float value, char *string)
+{
+	sprintf(string, "%.3f", value);
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::b2dest2string(float value, char *text)
+{
+	if(value < (1.0f/10.0f))
+		strcpy(text, "off");
+	else if(value < (2.0f/10.0f))
+		strcpy(text, "b1Lvl");
+	else if(value < (3.0f/10.0f))
+		strcpy(text, "b1Spd");
+	else if(value < (4.0f/10.0f))
+		strcpy(text, "b1Size");
+	else if(value < (5.0f/10.0f))
+		strcpy(text, "b1Start");
+	else if(value < (6.0f/10.0f))
+		strcpy(text, "b1End");
+	else if(value < (7.0f/10.0f))
+		strcpy(text, "Cutoff");
+	else if(value < (8.0f/10.0f))
+		strcpy(text, "Res");
+	else if(value < (9.0f/10.0f))
+		strcpy(text, "b1Pan");
+	else
+		strcpy(text, "b1RPos");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::e2dest2string(float value, char *text)
+{
+	if(value < (1.0f/22.0f))
+		strcpy(text, "off");
+	else if(value < (2.0f/22.0f))
+		strcpy(text, "b1Lvl");
+	else if(value < (3.0f/22.0f))
+		strcpy(text, "b1Spd");
+	else if(value < (4.0f/22.0f))
+		strcpy(text, "b1Size");
+	else if(value < (5.0f/22.0f))
+		strcpy(text, "b1Start");
+	else if(value < (6.0f/22.0f))
+		strcpy(text, "b1End");
+	else if(value < (7.0f/22.0f))
+		strcpy(text, "b2Lvl");
+	else if(value < (8.0f/22.0f))
+		strcpy(text, "b2Spd");
+	else if(value < (9.0f/22.0f))
+		strcpy(text, "b2Size");
+	else if(value < (10.0f/22.0f))
+		strcpy(text, "b2Start");
+	else if(value < (11.0f/22.0f))
+		strcpy(text, "b2End");
+	else if(value < (12.0f/22.0f))
+		strcpy(text, "Cutoff");
+	else if(value < (13.0f/22.0f))
+		strcpy(text, "Res");
+	else if(value < (14.0f/22.0f))
+		strcpy(text, "l1Depth");
+	else if(value < (15.0f/22.0f))
+		strcpy(text, "l2Depth");
+	else if(value < (16.0f/22.0f))
+		strcpy(text, "b1Pan");
+	else if(value < (17.0f/22.0f))
+		strcpy(text, "b1RPos");
+	else if(value < (18.0f/22.0f))
+		strcpy(text, "b2Pan");
+	else if(value < (19.0f/22.0f))
+		strcpy(text, "b2RPos");
+	else if(value < (20.0f/22.0f))
+		strcpy(text, "b2Dpth");
+	else if(value < (21.0f/22.0f))
+		strcpy(text, "l1Freq");
+	else
+		strcpy(text, "l2Freq");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::e2invert2string(float value, char *text)
+{
+	if(value < 0.5)
+		strcpy(text, "off");
+	else
+		strcpy(text, "invert");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::lfonote2string(float value, char *text)
+{
+	if(value < (1.0f/12.0f))
+		strcpy(text, "1/16");
+	else if(value < (2.0f/12.0f))
+		strcpy(text, "1/8");
+	else if(value < (3.0f/12.0f))
+		strcpy(text, "1/6");
+	else if(value < (4.0f/12.0f))
+		strcpy(text, "1/4");
+	else if(value < (5.0f/12.0f))
+		strcpy(text, "1/3");
+	else if(value < (6.0f/12.0f))
+		strcpy(text, "1/2");
+	else if(value < (7.0f/12.0f))
+		strcpy(text, "1");
+	else if(value < (8.0f/12.0f))
+		strcpy(text, "2");
+	else if(value < (9.0f/12.0f))
+		strcpy(text, "3");
+	else if(value < (10.0f/12.0f))
+		strcpy(text, "4");
+	else if(value < (11.0f/12.0f))
+		strcpy(text, "6");
+	else
+		strcpy(text, "8");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::lfodest2string(float value, char *text)
+{
+	if(value < (1.0f/18.0f))
+		strcpy(text, "off");
+	else if(value < (2.0f/18.0f))
+		strcpy(text, "b1Lvl");
+	else if(value < (3.0f/18.0f))
+		strcpy(text, "b1Spd");
+	else if(value < (4.0f/18.0f))
+		strcpy(text, "b1Size");
+	else if(value < (5.0f/18.0f))
+		strcpy(text, "b1Start");
+	else if(value < (6.0f/18.0f))
+		strcpy(text, "b1End");
+	else if(value < (7.0f/18.0f))
+		strcpy(text, "b2Lvl");
+	else if(value < (8.0f/18.0f))
+		strcpy(text, "b2Spd");
+	else if(value < (9.0f/18.0f))
+		strcpy(text, "b2Size");
+	else if(value < (10.0f/18.0f))
+		strcpy(text, "b2Start");
+	else if(value < (11.0f/18.0f))
+		strcpy(text, "b2End");
+	else if(value < (12.0f/18.0f))
+		strcpy(text, "Cutoff");
+	else if(value < (13.0f/18.0f))
+		strcpy(text, "Res");
+	else if(value < (14.0f/18.0f))
+		strcpy(text, "b1Pan");
+	else if(value < (15.0f/18.0f))
+		strcpy(text, "b1RPos");
+	else if(value < (16.0f/18.0f))
+		strcpy(text, "b2Pan");
+	else if(value < (17.0f/18.0f))
+		strcpy(text, "b2RPos");
+	else
+		strcpy(text, "b2Dpth");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::temposync2string(float value, char *text)
+{
+	if(value < 0.5)
+		strcpy(text, "Hz");
+	else
+		strcpy(text, "Beat");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::wave2string(float value, char *text)
+{
+	if(value < (1.0f/5.0f))
+		strcpy(text, "Sine");
+	else if(value < (2.0f/5.0f))
+		strcpy(text, "Saw");
+	else if(value < (3.0f/5.0f))
+		strcpy(text, "Squ");
+	else if(value < (4.0f/5.0f))
+		strcpy(text, "S/H");
+	else
+		strcpy(text, "Ramp");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::filttype2string(float value, char *text)
+{
+	if(value < 0.33f)
+		strcpy(text, "Hi");
+	else if(value < 0.66f)
+		strcpy(text, "Band");
+	else
+		strcpy(text, "Low");
+}
+
+//----------------------------------------------------------------------------
+void BufferSynth2::pcorrection2string(float value, char *text)
+{
+	if(value < 0.33f)
+		strcpy(text, "off");
+	else if(value < 0.66f)
+		strcpy(text, "Brutal");
+	else
+		strcpy(text, "Nice");
+}
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a

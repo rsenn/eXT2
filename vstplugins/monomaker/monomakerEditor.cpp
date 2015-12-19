@@ -328,11 +328,16 @@ void MonomakerEditor::valueChanged(CDrawContext* context, CControl* control)
 		case kDestroyFXlinkID:
 			if (control->getValue() >= 0.5f)
 			{
+<<<<<<< HEAD
                 // create a command that tries to launch a bunch of likely browsers
+=======
+                // create a command that tries to launch a bunch of likely browsers
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
                 char* const browserNames =
                     "firefox 'http://www.smartelectronix.com/~destroyfx/' || "
                     "mozilla 'http://www.smartelectronix.com/~destroyfx/' || "
                     "konqueror 'http://www.smartelectronix.com/~destroyfx/' || "
+<<<<<<< HEAD
                     "opera 'http://www.smartelectronix.com/~destroyfx/'";
 
                char* const argv[4] = { "/bin/sh", "-c", browserNames, 0 };
@@ -344,6 +349,19 @@ void MonomakerEditor::valueChanged(CDrawContext* context, CControl* control)
                    // Child process
                    execve (argv[0], argv, environ);
                    exit (0);
+=======
+                    "opera 'http://www.smartelectronix.com/~destroyfx/'";
+
+               char* const argv[4] = { "/bin/sh", "-c", browserNames, 0 };
+               const int cpid = fork();
+               if (cpid == 0)
+               {
+                   setsid();
+
+                   // Child process
+                   execve (argv[0], argv, environ);
+                   exit (0);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
                }
                			
                control->update(context);

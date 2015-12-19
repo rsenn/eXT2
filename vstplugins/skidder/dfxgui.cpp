@@ -743,11 +743,16 @@ void CWebLink::mouse(CDrawContext *pContext, CPoint &where, long button)
 void CWebLink::openTheURL()
 {
 /*
+<<<<<<< HEAD
     // create a command that tries to launch a bunch of likely browsers
+=======
+    // create a command that tries to launch a bunch of likely browsers
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
     char* const browserNames =
         "firefox 'http://www.smartelectronix.com/~destroyfx/' || "
         "mozilla 'http://www.smartelectronix.com/~destroyfx/' || "
         "konqueror 'http://www.smartelectronix.com/~destroyfx/' || "
+<<<<<<< HEAD
         "opera 'http://www.smartelectronix.com/~destroyfx/'";
 
     char* const argv[4] = { "/bin/sh", "-c", browserNames, 0 };
@@ -759,6 +764,19 @@ void CWebLink::openTheURL()
         // Child process
         execve (argv[0], argv, environ);
         exit (0);
+=======
+        "opera 'http://www.smartelectronix.com/~destroyfx/'";
+
+    char* const argv[4] = { "/bin/sh", "-c", browserNames, 0 };
+    const int cpid = fork();
+    if (cpid == 0)
+    {
+        setsid();
+
+        // Child process
+        execve (argv[0], argv, environ);
+        exit (0);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
     }
 */
 }

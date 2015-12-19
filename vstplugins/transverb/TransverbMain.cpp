@@ -1,7 +1,12 @@
 #include <iostream>
 
+<<<<<<< HEAD
 #include <AudioEffect.cpp>
 #include <audioeffectx.h>
+=======
+#include <AudioEffect.cpp>
+#include <audioeffectx.h>
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 #include <audioeffectx.cpp>
 
 #include "transverb.hpp"
@@ -12,12 +17,21 @@
 #include "transverbFormalities.cpp"
 #include "transverbProcess.cpp"
 
+<<<<<<< HEAD
 //-----------------------------------------------------------------------------------------
 AEffect* main_plugin (audioMasterCallback audioMaster) asm ("main");
 #define main main_plugin
 
 AEffect *main (audioMasterCallback audioMaster)
 {
+=======
+//-----------------------------------------------------------------------------------------
+AEffect* main_plugin (audioMasterCallback audioMaster) asm ("main");
+#define main main_plugin
+
+AEffect *main (audioMasterCallback audioMaster)
+{
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 //    std::cout << "main" << std::endl;
 
 	Transverb* effect = new Transverb (audioMaster);

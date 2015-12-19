@@ -21,6 +21,7 @@
 //	DEALINGS IN THE SOFTWARE.
 //	--------------------------------------------------------------------------
 
+<<<<<<< HEAD
 #include "VstPlugin.h"
 #include <iostream>
 #include <cmath>
@@ -31,10 +32,23 @@ using namespace std;
 AudioEffect *createEffectInstance(audioMasterCallback audioMaster)
 {
 	return new VstPlugin(audioMaster);
+=======
+#include "VstPlugin.h"
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+//-------------------------------------------------------------------------------------------------------
+AudioEffect *createEffectInstance(audioMasterCallback audioMaster)
+{
+	return new VstPlugin(audioMaster);
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 }
 
 //----------------------------------------------------------------------------
 VstPlugin::VstPlugin(audioMasterCallback audioMaster):
+<<<<<<< HEAD
 AudioEffectX(audioMaster, numPrograms, numParameters),
 programs(0),
 samplerate(44100.0f),
@@ -54,6 +68,27 @@ currentDelay(0.0f)
 	for(i=0;i<numParameters;++i)
 		parameters[i] = 0.0f;
 
+=======
+AudioEffectX(audioMaster, numPrograms, numParameters),
+programs(0),
+samplerate(44100.0f),
+tempEvents(0),
+numEvents(0),
+numPendingEvents(0),
+frames(0),
+effectName("Feedback-y Thing"),
+vendorName("ndc Plugs"),
+bufferSize(88200),
+writePointer(0),
+currentDelay(0.0f)
+{
+	int i;
+
+	//Initialise parameters.
+	for(i=0;i<numParameters;++i)
+		parameters[i] = 0.0f;
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	//Setup event queue.
 	for(i=0;i<maxNumEvents;++i)
 	{
@@ -71,6 +106,7 @@ currentDelay(0.0f)
 	tempEvents = new VstEvents;
 	tempEvents->numEvents = 1;
 	tempEvents->events[0] = (VstEvent *)midiEvent[0];
+<<<<<<< HEAD
 
 	//Setup programs here.
 	programs = new PluginProgram[numPrograms];
@@ -78,11 +114,21 @@ currentDelay(0.0f)
 	setParameter(Pitch, 0.5f);
 	setParameter(Boost, 0.0f);
 
+=======
+
+	//Setup programs here.
+	programs = new PluginProgram[numPrograms];
+	setProgram(0);
+	setParameter(Pitch, 0.5f);
+	setParameter(Boost, 0.0f);
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	//Set various constants.
     setNumInputs(2);
     setNumOutputs(2);
     canProcessReplacing(true);
     isSynth(false);
+<<<<<<< HEAD
     setUniqueID((int) "FbT1");
 
 	//Initialise buffers.
@@ -93,6 +139,18 @@ currentDelay(0.0f)
 	{
 		buffer[0][i] = 0.0f;
 		buffer[1][i] = 0.0f;
+=======
+    setUniqueID((int) "FbT1");
+
+	//Initialise buffers.
+	buffer[0] = new float[bufferSize];
+	buffer[1] = new float[bufferSize];
+
+	for(i=0;i<bufferSize;++i)
+	{
+		buffer[0][i] = 0.0f;
+		buffer[1][i] = 0.0f;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	}
 }
 
@@ -100,7 +158,11 @@ currentDelay(0.0f)
 VstPlugin::~VstPlugin()
 {
 	int i;
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	//Delete event queue.
 	for(i=0;i<maxNumEvents;++i)
 	{
@@ -108,6 +170,7 @@ VstPlugin::~VstPlugin()
 			delete midiEvent[i];
 	}
 	if(tempEvents)
+<<<<<<< HEAD
 		delete tempEvents;
 
 	//Delete programs.
@@ -116,12 +179,23 @@ VstPlugin::~VstPlugin()
 
 	//Delete buffers.
 	delete buffer[0];
+=======
+		delete tempEvents;
+
+	//Delete programs.
+	if(programs)
+		delete [] programs;
+
+	//Delete buffers.
+	delete buffer[0];
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	delete buffer[1];
 }
 
 //----------------------------------------------------------------------------
 void VstPlugin::process(float **inputs, float **outputs, long sampleFrames)
 {
+<<<<<<< HEAD
 	long i;
 
 	frames = sampleFrames;
@@ -220,6 +294,106 @@ void VstPlugin::processReplacing(float **inputs,
 	{
 		for(i=0;i<numPendingEvents;++i)
 			midiEvent[eventNumArray[i]]->deltaFrames -= frames;
+=======
+	long i;
+
+	frames = sampleFrames;
+
+	//Calculate audio.
+	for(i=0;i<frames;++i)
+	{
+		//Process MIDI events,if there are any.
+		if(numEvents>0)
+			processMIDI(i);
+
+		outputs[0][i] += inputs[0][i];
+		outputs[1][i] += inputs[1][i];
+	}
+	//If there are events remaining in the queue, update their delta values.
+	if(numPendingEvents > 0)
+	{
+		for(i=0;i<numPendingEvents;++i)
+			midiEvent[eventNumArray[i]]->deltaFrames -= frames;
+	}
+}
+
+//----------------------------------------------------------------------------
+void VstPlugin::processReplacing(float **inputs,
+								 float **outputs,
+								 long sampleFrames)
+{
+	long i;
+	float tempf0, tempf1;
+	float readIndex;
+	float readFrac;
+	unsigned int indexInt;
+	unsigned int readNext;
+	float tempDelay;
+	float bufferSizeF = static_cast<float>(bufferSize);
+
+	frames = sampleFrames;
+
+	//Calculate audio.
+	for(i=0;i<frames;++i)
+	{
+		//Process MIDI events,if there are any.
+		if(numEvents>0)
+			processMIDI(i);
+
+		//Update currentDelay.
+		tempDelay = ((1.0f-parameters[Pitch])+0.001f) * 0.01f * bufferSizeF;
+
+		tempf0 = (tempDelay - currentDelay) * (1.0f/1024.0f);
+		if(tempf0 > 2.0f)
+			tempf0 = 2.0f;
+		else if(tempf0 < -2.0f)
+			tempf0 = -2.0f;
+		currentDelay += tempf0;
+
+		//Get current sample (left).
+		readIndex = static_cast<float>(writePointer) - currentDelay;
+		while(readIndex < 0.0f)
+			readIndex += bufferSizeF;
+		indexInt = static_cast<int>(readIndex);
+		readNext = (indexInt+1) % bufferSize;
+		readFrac = readIndex - static_cast<float>(indexInt);
+		tempf0 = buffer[0][indexInt] * (1.0f-readFrac);
+		tempf0 += buffer[0][readNext] * readFrac;
+
+		//Get current sample(right).
+		readIndex = static_cast<float>(writePointer) - currentDelay;
+		while(readIndex < 0.0f)
+			readIndex += bufferSizeF;
+		indexInt = static_cast<int>(readIndex);
+		readNext = (indexInt+1) % bufferSize;
+		readFrac = readIndex - static_cast<float>(indexInt);
+		tempf1 = buffer[1][indexInt] * (1.0f-readFrac);
+		tempf1 += buffer[1][readNext] * readFrac;
+
+		//Update buffer.
+		buffer[0][writePointer] = tanh(inputs[0][i] + (tempf0 * (((parameters[Boost]*0.1f)+0.9f)*0.35f)) * 3.1415f);
+		buffer[1][writePointer] = tanh(inputs[1][i] + (tempf1 * (((parameters[Boost]*0.1f)+0.9f)*0.35f)) * 3.1415f);
+		++writePointer;
+		writePointer %= bufferSize;
+
+		//Write outputs.
+		if(parameters[Bypass] < 0.5f)
+		{
+			outputs[0][i] = (inputs[0][i] + tempf0) * 0.5f;
+			outputs[1][i] = (inputs[1][i] + tempf1) * 0.5f;
+		}
+		else
+		{
+			outputs[0][i] = inputs[0][i];
+			outputs[1][i] = inputs[1][i];
+		}
+	}
+	//If there are events remaining in the queue, update their delta values.
+	if(numPendingEvents > 0)
+	{
+		for(i=0;i<numPendingEvents;++i)
+			midiEvent[eventNumArray[i]]->deltaFrames -= frames;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	}
 }
 
@@ -228,16 +402,27 @@ long VstPlugin::processEvents(VstEvents *events)
 {
 	int i, j, k;
 	VstMidiEvent *event;
+<<<<<<< HEAD
 
 	//Go through each event in events.
 	for(i=0;i<events->numEvents;++i)
 	{
+=======
+
+	//Go through each event in events.
+	for(i=0;i<events->numEvents;++i)
+	{
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 		//Only interested in MIDI events.
 		if(events->events[i]->type == kVstMidiType)
 		{
 			event = (VstMidiEvent *)events->events[i];
 			j = -1;
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			//Find a space for it in the midiEvent queue.
 			for(k=1;k<maxNumEvents;++k)
 			{
@@ -249,7 +434,11 @@ long VstPlugin::processEvents(VstEvents *events)
 					j = k;
 					break;
 				}
+<<<<<<< HEAD
 			}
+=======
+			}
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 			//Add it to the queue if there's still room.
 			if((j > 0)&&(numEvents < maxNumEvents))
 			{
@@ -270,13 +459,18 @@ long VstPlugin::processEvents(VstEvents *events)
 				midiEvent[j]->reserved2 =		event->reserved2;
 			}
 		}
+<<<<<<< HEAD
 	}
+=======
+	}
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
 	return 1;
 }
 
 //----------------------------------------------------------------------------
 void VstPlugin::resume()
+<<<<<<< HEAD
 {
 	int i;
 
@@ -301,6 +495,32 @@ void VstPlugin::resume()
 			buffer[0][i] = 0.0f;
 			buffer[1][i] = 0.0f;
 		}
+=======
+{
+	int i;
+
+	//Let the host know we want to receive MIDI events.
+	AudioEffectX::resume();
+
+	//Update buffers if necessary.
+	if(getSampleRate() != samplerate)
+	{
+		samplerate = getSampleRate();
+
+		delete buffer[0];
+		delete buffer[1];
+
+		bufferSize = static_cast<long>(samplerate*2.0f);
+
+		buffer[0] = new float[bufferSize];
+		buffer[1] = new float[bufferSize];
+
+		for(i=0;i<bufferSize;++i)
+		{
+			buffer[0][i] = 0.0f;
+			buffer[1][i] = 0.0f;
+		}
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	}
 }
 
@@ -336,28 +556,46 @@ void VstPlugin::getProgramName(char *name)
 
 //----------------------------------------------------------------------------
 bool VstPlugin::getProgramNameIndexed(long category, long index, char* text)
+<<<<<<< HEAD
 {
 	bool retval = false;
+=======
+{
+	bool retval = false;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
     if(index < numPrograms)
     {
 		strcpy(text, programs[index].name.c_str());
 		retval = true;
+<<<<<<< HEAD
     }
 
+=======
+    }
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	return retval;
 }
 
 //----------------------------------------------------------------------------
 bool VstPlugin::copyProgram(long destination)
 {
+<<<<<<< HEAD
 	bool retval = false;
+=======
+	bool retval = false;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
     if(destination < numPrograms)
     {
 		programs[destination] = programs[curProgram];
         retval = true;
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
     return retval;
 }
@@ -365,7 +603,11 @@ bool VstPlugin::copyProgram(long destination)
 //----------------------------------------------------------------------------
 void VstPlugin::setParameter(long index, float value)
 {
+<<<<<<< HEAD
 	parameters[index] = value;
+=======
+	parameters[index] = value;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	programs[curProgram].parameters[index] = parameters[index];
 }
 
@@ -440,7 +682,11 @@ float VstPlugin::getVu()
 //----------------------------------------------------------------------------
 bool VstPlugin::getEffectName(char* name)
 {
+<<<<<<< HEAD
     strcpy(name, effectName.c_str());
+=======
+    strcpy(name, effectName.c_str());
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
     return true;
 }
@@ -448,7 +694,11 @@ bool VstPlugin::getEffectName(char* name)
 //----------------------------------------------------------------------------
 bool VstPlugin::getVendorString(char* text)
 {
+<<<<<<< HEAD
     strcpy(text, vendorName.c_str());
+=======
+    strcpy(text, vendorName.c_str());
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
     return true;
 }
@@ -456,8 +706,13 @@ bool VstPlugin::getVendorString(char* text)
 //----------------------------------------------------------------------------
 bool VstPlugin::getProductString(char* text)
 {
+<<<<<<< HEAD
     strcpy(text, effectName.c_str());
 
+=======
+    strcpy(text, effectName.c_str());
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
     return true;
 }
 
@@ -476,7 +731,11 @@ VstPlugCategory VstPlugin::getPlugCategory()
 //----------------------------------------------------------------------------
 bool VstPlugin::getInputProperties (long index, VstPinProperties* properties)
 {
+<<<<<<< HEAD
 	bool retval = false;
+=======
+	bool retval = false;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
 	if(index == 0)
 	{
@@ -489,7 +748,11 @@ bool VstPlugin::getInputProperties (long index, VstPinProperties* properties)
 		sprintf(properties->label, "%s Right Input 1", effectName.c_str());
 		properties->flags = kVstPinIsStereo|kVstPinIsActive;
 		retval = true;
+<<<<<<< HEAD
 	}
+=======
+	}
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
 	return retval;
 }
@@ -497,7 +760,11 @@ bool VstPlugin::getInputProperties (long index, VstPinProperties* properties)
 //----------------------------------------------------------------------------
 bool VstPlugin::getOutputProperties (long index, VstPinProperties* properties)
 {
+<<<<<<< HEAD
 	bool retval = false;
+=======
+	bool retval = false;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
 	if(index == 0)
 	{
@@ -510,7 +777,11 @@ bool VstPlugin::getOutputProperties (long index, VstPinProperties* properties)
 		sprintf(properties->label, "%s Right Output 1", effectName.c_str());
 		properties->flags = kVstPinIsStereo|kVstPinIsActive;
 		retval = true;
+<<<<<<< HEAD
 	}
+=======
+	}
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
 	return retval;
 }
@@ -656,6 +927,7 @@ void VstPlugin::MIDI_PitchBend(int ch, int x1, int x2, int delta)
 	midiEvent[0]->midiData[2] = x2;
 	midiEvent[0]->deltaFrames = delta;
 	sendVstEventsToHost(tempEvents);
+<<<<<<< HEAD
 }
 
 
@@ -671,6 +943,23 @@ AEffect *main (audioMasterCallback audioMaster)
 {
     std::cout << "main" << std::endl;
 
+=======
+}
+
+
+//----------------------------------------------------------------------------
+#include <vst/AudioEffect.cpp>
+#include <vst/audioeffectx.h>
+#include <vst/audioeffectx.cpp>
+
+AEffect* main_plugin (audioMasterCallback audioMaster) asm ("main");
+#define main main_plugin
+
+AEffect *main (audioMasterCallback audioMaster)
+{
+    std::cout << "main" << std::endl;
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	VstPlugin* effect = new VstPlugin (audioMaster);
 
 	if (!effect)

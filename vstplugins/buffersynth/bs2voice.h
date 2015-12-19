@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //	bs2voice.h - A single voice of Buffer Synth 2 (it gets called from a
 //				 bs2notemaster object).
 //	--------------------------------------------------------------------------
@@ -20,6 +21,30 @@
 //	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 //	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //	DEALINGS IN THE SOFTWARE.
+=======
+//	bs2voice.h - A single voice of Buffer Synth 2 (it gets called from a
+//				 bs2notemaster object).
+//	--------------------------------------------------------------------------
+//	Copyright (c) 2005 Niall Moody
+//	
+//	Permission is hereby granted, free of charge, to any person obtaining a
+//	copy of this software and associated documentation files (the "Software"),
+//	to deal in the Software without restriction, including without limitation
+//	the rights to use, copy, modify, merge, publish, distribute, sublicense,
+//	and/or sell copies of the Software, and to permit persons to whom the
+//	Software is furnished to do so, subject to the following conditions:
+//
+//	The above copyright notice and this permission notice shall be included in
+//	all copies or substantial portions of the Software.
+//
+//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+//	THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+//	DEALINGS IN THE SOFTWARE.
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 //	--------------------------------------------------------------------------
 
 #ifndef BS2VOICE_H_
@@ -39,9 +64,15 @@ inline int float2int(float val)
 {
     return (int)val;
 }
+<<<<<<< HEAD
 
 ///	Simple linear interpolation.
 inline float interp(float val1, float val2, float index)
+=======
+
+///	Simple linear interpolation.
+inline float interp(float val1, float val2, float index)
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 {
 	float outval, index_fract;
 
@@ -51,6 +82,7 @@ inline float interp(float val1, float val2, float index)
 	return outval;
 }
 
+<<<<<<< HEAD
 class bs2notemaster;
 
 ///	A new type used to provide the same functionality as a single float, but with two of them.
@@ -110,6 +142,67 @@ struct twofloats
 	};
 };
 
+=======
+class bs2notemaster;
+
+///	A new type used to provide the same functionality as a single float, but with two of them.
+/*!
+	I tend to use this kind of thing a lot now.  \e Very Useful.
+ */
+struct twofloats
+{
+  public:
+	float left;
+	float right;
+
+	twofloats operator+(twofloats op2)	//These operators are so that we can use twofloats
+	{									//variables in the filter - it saves having to
+		twofloats temp;					//re-write the filter code completely to have 2
+		temp.left = op2.left + left;	//separate paths (left & right).
+		temp.right = op2.right + right;
+		return temp;
+	};
+
+	twofloats operator+=(twofloats op2)
+	{
+		left = op2.left + left;
+		right = op2.right + right;
+		return *this;
+	};
+
+	twofloats operator-(twofloats op2)
+	{
+		twofloats temp;
+		temp.left = left - op2.left;
+		temp.right = right - op2.right;
+		return temp;
+	};
+
+	twofloats operator*(twofloats op2)
+	{
+		twofloats temp;
+		temp.left = op2.left * left;
+		temp.right = op2.right * right;
+		return temp;
+	};
+
+	twofloats operator*(float op2)
+	{
+		twofloats temp;
+		temp.left = op2 * left;
+		temp.right = op2 * right;
+		return temp;
+	};
+
+	twofloats operator*=(float op2)
+	{
+		left = op2 * left;
+		right = op2 * right;
+		return *this;
+	};
+};
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 ///	These are the indices of all the parameters.
 enum
 {
@@ -134,7 +227,11 @@ enum
 	kb1_InvertSize,
 	kb1_ReadPosition,
 	kb1_ResetRPOnMIDINote,
+<<<<<<< HEAD
 	kb1_Pan,
+=======
+	kb1_Pan,
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	kb1_IPGain,
 
 	//buffer 2
@@ -161,7 +258,11 @@ enum
 	kb2_Envelope,
 	kb2_ReadPosition,
 	kb2_ResetRPOnMIDINote,
+<<<<<<< HEAD
 	kb2_Pan,
+=======
+	kb2_Pan,
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	kb2_IPGain,
 
 	//amplitude envelope
@@ -240,6 +341,7 @@ enum
 	kDummy15,	//load bank
 	kDummy16,	//save bank
 	kDummy17,	//random
+<<<<<<< HEAD
 //#if defined(_WINDOWS) && defined(_DEBUG)
 #ifdef TOMASZ_DEBUG
 	kDummy18,	//save to internal patch
@@ -251,6 +353,19 @@ enum
 	kDummy23,	//b2s2tkick
 };
 
+=======
+//#if defined(_WINDOWS) && defined(_DEBUG)
+#ifdef TOMASZ_DEBUG
+	kDummy18,	//save to internal patch
+#endif
+	kDummy19,	//threshold lamp, b1
+	kDummy20,	//threshold lamp, b2
+	kDummy21,	//patch menu
+	kDummy22,	//b1s2tkick
+	kDummy23,	//b2s2tkick
+};
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 ///	All the possible modulation destinations.
 enum Destination
 {
@@ -268,6 +383,7 @@ enum Destination
 	dest_filtcutoff,
 	dest_filtresonance,
 	dest_lfo1depth,
+<<<<<<< HEAD
 	dest_lfo2depth,
 	dest_buf1pan,
 	dest_buf1readp,
@@ -275,6 +391,15 @@ enum Destination
 	dest_buf2readp,
 	dest_buf2depth,
 	dest_lfo1nfreq,
+=======
+	dest_lfo2depth,
+	dest_buf1pan,
+	dest_buf1readp,
+	dest_buf2pan,
+	dest_buf2readp,
+	dest_buf2depth,
+	dest_lfo1nfreq,
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	dest_lfo2nfreq,
 };
 
@@ -288,11 +413,19 @@ enum ADSR
 	kS,
 	kR,
 };
+<<<<<<< HEAD
 
 ///	TanhWave size?
 #define TABLE_SIZE 2048
 #define TABLE_SIZE_INT (int)TABLE_SIZE
 #define INV_TS (float)(1.0f/(float)TABLE_SIZE)
+=======
+
+///	TanhWave size?
+#define TABLE_SIZE 2048
+#define TABLE_SIZE_INT (int)TABLE_SIZE
+#define INV_TS (float)(1.0f/(float)TABLE_SIZE)
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 #define TS_DIV_TWO_PI (TABLE_SIZE/TWO_PI)
 
 //----------------------------------------------------------------------------
@@ -303,16 +436,27 @@ enum ADSR
 #endif
 
 #define LFO_MAX_FREQ 30.0f
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 ///	Enumerates the available LFO waveforms.
 enum wform {
 	wf_sine,           //recosc gets a bit funny at low frequencies, use this instead (?)
 	wf_saw,
 	wf_squ,
+<<<<<<< HEAD
 	wf_sh,
 	wf_ramp
 };
 
+=======
+	wf_sh,
+	wf_ramp
+};
+
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 ///	Enumerates the available note lengths, when the LFOs are used in tempo sync mode.
 enum note {
 	nl_breve,			  //8
@@ -339,16 +483,25 @@ typedef enum
 	ft_Low,
 	ft_Notch
 } filt_type;
+<<<<<<< HEAD
 
 ///	Maximum frequency the filter will go to.
 /*!
 	We're using a SV filter, so it can't go to Nyquist w/out getting
 	all unstable.
+=======
+
+///	Maximum frequency the filter will go to.
+/*!
+	We're using a SV filter, so it can't go to Nyquist w/out getting
+	all unstable.
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
  */
 #define FILTER_MAX 7500.0f
 
 //----------------------------------------------------------------------------
 //Class Declaration
+<<<<<<< HEAD
 //----------------------------------------------------------------------------
 ///	A single voice for the plugin.
 /*!
@@ -424,11 +577,89 @@ class bs2voice
 		What is this for?
 	 */
 	void setIsActive(bool val) {IsActive = val;};
+=======
+//----------------------------------------------------------------------------
+///	A single voice for the plugin.
+/*!
+	This is where all the audio stuff happens.
+ */
+class bs2voice
+{
+  public:
+	///	Constructor (actually, this one's never used...).
+	/*!
+		\param tag It's index in notemaster's array of voices.
+		\param buffer1 pointer to notemaster's buffer1 (this is shared by all the voices).
+		\param buffer2 pointer to notemaster's buffer2 (this is shared by all the voices).
+		\param tanhwave pointer to notemaster's TanhWave lookup table (this is shared by all the voices).
+		\param sinewave pointer to notemaster's SineWave lookup table (this is shared by all the voices).
+	 */
+	bs2voice(bs2notemaster *notemaster, int tag, float samplerate, float *buffer1, float *buffer2, float *tanhwave, float *sinewave);
+	///	Default constructor (for allocating arrays).
+	bs2voice() {};
+	///	Destructor.
+	/*!
+		\todo Is this really all that's supposed to happen here?
+	 */
+	~bs2voice() {/*delete LFO_Filter1; delete LFO_Filter2;*/};
+	///	Takes the place of the constructor when the voice is constructed in an array.
+	/*!
+		\param tag It's index in notemaster's array of voices.
+		\param buffer1 pointer to notemaster's buffer1 (this is shared by all the voices).
+		\param buffer2 pointer to notemaster's buffer2 (this is shared by all the voices).
+		\param tanhwave pointer to notemaster's TanhWave lookup table (this is shared by all the voices).
+		\param sinewave pointer to notemaster's SineWave lookup table (this is shared by all the voices).
+	 */
+	void Create(bs2notemaster *notemaster, int tag, float samplerate, float *buffer1, float *buffer2, float *tanhwave, float *sinewave);
+
+	///	Tells this voice to start platying.
+	/*!
+		Envelopes go to the start of their Attack phase etc.
+	 */
+	void NoteOn(int note, float velocity);
+	///	Tells the voice to stop playing/go to the envelopes' Release phase.
+	void NoteOff();
+	///	Sets the pitch-bend value for this voice (does this actually do anything?).
+	void SetPitchBend(float val);
+
+	///	Returns whether the voice is currently playing or not.
+	bool GetIsActive() {return IsActive;};
+
+	///	Sets the indexed parameter to val.
+	void SetParameter(long index, float val);
+	//void SetSize2Tempo(note noteval, int buffer);	//time = time the note takes, fromstart => true = set size according to start position
+	///	Sets the samplerate.
+	void SetSamplerate(float samplerate) {SampleRate = samplerate; InverseSampleRate = 1.0f/SampleRate; Filter_CalcF();};
+	///	Sets the tempo.
+	/*!
+		Used to calculate correct note lengths for the LFOs.
+	 */
+	void SetTempo(float tempo);
+
+	///	What is this for?
+	float GetCS() {return LFO_Increment1;};
+	///	Returns the next sample to be sent to the host.
+	twofloats GetSample(bool barstart);
+
+	///	Tells the plugin it is the main voice.
+	/*!
+		The main voice is effectively always on - this allows, for
+		example, the use of polyphony even when you're not in synth
+		mode.
+	 */
+	void setFirstVoice() {FirstVoice = true;};
+	///	Tells the plugin it's active?
+	/*!
+		What is this for?
+	 */
+	void setIsActive(bool val) {IsActive = val;};
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 
   private:
 	//------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------
+<<<<<<< HEAD
 	bs2notemaster *NoteMaster;
 	///	The plugin's index in NoteMaster's array of bs2voices
 	int Tag;
@@ -454,6 +685,33 @@ class bs2voice
 	float InverseSampleRate;
 
 	///	For when the amplitude envelope's not on.
+=======
+	bs2notemaster *NoteMaster;
+	///	The plugin's index in NoteMaster's array of bs2voices
+	int Tag;
+
+	///	Used to tell the notemaster whether the voice is already running.
+	bool IsActive;
+	///	Used so that control signals (i.e. envelopes etc.) are only updated infrequently.
+	int ControlCount;
+
+	///	Used to keep track of the current note's frequency.
+	float BaseFrequency;
+	///	The actual frequency we're using (including pitch bend etc.).
+	float Frequency;
+	///	The current note's velocity (do we actually do anything with this?).
+	float Velocity;
+	///	Used to work out pitchbend freq.
+	int Note;
+	///	Used to know whether to turn off/on polyphonic voices.
+	bool FirstVoice;
+
+	float SampleRate;
+	///	Used to speed things up a wee bit.
+	float InverseSampleRate;
+
+	///	For when the amplitude envelope's not on.
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	float noteOnOffFade;
 
 	//------------------------------------------------------------------------
@@ -461,10 +719,17 @@ class bs2voice
 	//------------------------------------------------------------------------
 	float *Buffer1;
 	float *Buffer2;
+<<<<<<< HEAD
 
 	///	Our current position for reading back from Buffer1.
 	float Index1;
 	float Increment1;
+=======
+
+	///	Our current position for reading back from Buffer1.
+	float Index1;
+	float Increment1;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	///	Our current position for reading back from Buffer2.
 	float Index2;
 	float Increment2;
@@ -473,6 +738,7 @@ class bs2voice
 	float Start2, End2;
 	float Frequency1, Frequency2;
 	float Env;
+<<<<<<< HEAD
 
 	///	?
 	float Fades1;
@@ -480,6 +746,15 @@ class bs2voice
 
 	///	true = use buffers as oscillators, & multiply o/p by Velocity (?).
 	bool OscillatorMode;
+=======
+
+	///	?
+	float Fades1;
+	float Fades2;
+
+	///	true = use buffers as oscillators, & multiply o/p by Velocity (?).
+	bool OscillatorMode;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	///	Used as a slight optimisation somewhere?
 	float OscMode_f;
 	int PitchCorrection;
@@ -511,8 +786,13 @@ class bs2voice
 	float b2_Pan;
 
 	bool b1_RPChanged;
+<<<<<<< HEAD
 	bool b2_RPChanged;
 	float b1_NewRP;
+=======
+	bool b2_RPChanged;
+	float b1_NewRP;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	float b2_NewRP;
 	
 	Destination b2_Destination;
@@ -522,10 +802,17 @@ class bs2voice
 	//------------------------------------------------------------------------
 	float *TanhWaveform;
 	bool NoteIsOff;
+<<<<<<< HEAD
 
 	///	The envelopes use a tanh-waveform (s-shaped curve), so they need indices.
 	float Index_Env1;
 	ADSR CurrentSegment1;
+=======
+
+	///	The envelopes use a tanh-waveform (s-shaped curve), so they need indices.
+	float Index_Env1;
+	ADSR CurrentSegment1;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	///	The envelopes use a tanh-waveform (s-shaped curve), so they need indices.
 	float Index_Env2;
 	ADSR CurrentSegment2;
@@ -545,9 +832,15 @@ class bs2voice
 		  IncrementD2,
 		  IncrementS2,
 		  IncrementR2;
+<<<<<<< HEAD
 
 	///	The current value of Envelope 1.
 	float Env1;
+=======
+
+	///	The current value of Envelope 1.
+	float Env1;
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	///	The current value of Envelope 2.
 	float Env2;
 
@@ -567,6 +860,7 @@ class bs2voice
 
 	//------------------------------------------------------------------------
 	//LFO-specific stuff
+<<<<<<< HEAD
 	//------------------------------------------------------------------------
 	///	Resets the oscillator's phase to val.
 	/*!
@@ -599,6 +893,40 @@ class bs2voice
 	/*///	Not used anymore?
 	NyquistEllipFilter *LFO_Filter1;
 	///	Not used anymore?
+=======
+	//------------------------------------------------------------------------
+	///	Resets the oscillator's phase to val.
+	/*!
+		I'm fairly sure val is only ever 0 here.
+	 */
+	void LFO1_ResetPhaseTo(float val); //val = 0->1
+	///	Resets the oscillator's phase to val.
+	/*!
+		I'm fairly sure val is only ever 0 here.
+	 */
+	void LFO2_ResetPhaseTo(float val);
+	///	Converts the float value from the plugin into the correct wform enumeration.
+	wform Float2Wform(float inval);
+	///	Converts the float value from the plugin into the correct note length enumeration.
+	note Float2Note(float inval);
+	///	Converts a note length enumeration into a float value.
+	/*!
+		Returns the number of beats.
+	 */
+	float Note2Float(note nlength);
+	///	Converts a note length enumeration into a float value, inverted.
+	/*!
+		Returns the invers number of beats.  What's this used for
+		again?
+	 */
+	float Note2Float_Inv(note nlength);
+	///	Calculates the actual frequency of the oscillator according to nlength and the current tempo.
+	float CalcFreq(note nlength);
+
+	/*///	Not used anymore?
+	NyquistEllipFilter *LFO_Filter1;
+	///	Not used anymore?
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 	NyquistEllipFilter *LFO_Filter2;*/
 
 	float *SineWaveform;
@@ -638,12 +966,21 @@ class bs2voice
 
 	//------------------------------------------------------------------------
 	//Filter-specific stuff
+<<<<<<< HEAD
 	//------------------------------------------------------------------------
 	///	Calculate the F coefficient of the filter according to the current value of CutOff.
 #ifdef WIN32
 	__forceinline void Filter_CalcF(){
 #else
 	inline void Filter_CalcF(){
+=======
+	//------------------------------------------------------------------------
+	///	Calculate the F coefficient of the filter according to the current value of CutOff.
+#ifdef WIN32
+	__forceinline void Filter_CalcF(){
+#else
+	inline void Filter_CalcF(){
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 #endif
 		int tempIndex;
 		float tempIndex2;
@@ -654,12 +991,21 @@ class bs2voice
 		tempIndex2 = ((NDC_PI*CutOff)*InverseSampleRate) * TS_DIV_TWO_PI;
 		tempIndex = float2int(tempIndex2);
 		F = 2.0f * interp(SineWaveform[tempIndex], SineWaveform[tempIndex+1], tempIndex2);
+<<<<<<< HEAD
 	};
 	///	Calculate the F coefficient of the filter according to val.
 #ifdef WIN32
 	__forceinline void Filter_CalcF(float val){
 #else
 	inline  void Filter_CalcF(float val){
+=======
+	};
+	///	Calculate the F coefficient of the filter according to val.
+#ifdef WIN32
+	__forceinline void Filter_CalcF(float val){
+#else
+	inline  void Filter_CalcF(float val){
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
 #endif
 		int tempIndex;
 		float tempIndex2;
@@ -677,4 +1023,8 @@ class bs2voice
 	bool FiltOn;
 };
 
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> b32feae3968ea26b82a00fee5a6b1c8375c0568a
